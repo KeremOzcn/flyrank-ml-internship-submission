@@ -1,0 +1,107 @@
+{
+  "date": "2026-09-08",
+  "cli_version": "codex-cli 0.148.0",
+  "model": "CLI default; resolved model ID not emitted in saved events",
+  "runs": [
+    {
+      "version": 0,
+      "layer": "Weak baseline",
+      "word_count_whitespace": 26,
+      "thread_id": "01a0815e-7917-7d62-9fd4-886031a854fb",
+      "usage": {
+        "input_tokens": 22709,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 44,
+        "reasoning_output_tokens": 0
+      },
+      "warnings": [
+        "Skill descriptions were shortened to fit the skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest."
+      ],
+      "prompt_sha256": "92c183bd1da2c907051727cf00787029a54b5364c2b6a97ac89428298bb5ae25",
+      "output_sha256": "65f6a4eaff16e71afcacda4eb1d202ea5ef1fe800d85417e7921cfb89af754a4"
+    },
+    {
+      "version": 1,
+      "layer": "Clearer goal",
+      "word_count_whitespace": 204,
+      "thread_id": "01a0815e-c5e9-72a3-8be4-172c2150d736",
+      "usage": {
+        "input_tokens": 21991,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 312,
+        "reasoning_output_tokens": 45
+      },
+      "warnings": [],
+      "prompt_sha256": "8e8544855da6a388bca6e05319acc946d81bc40473ada7214998a6c921ebf157",
+      "output_sha256": "8e72b074d92f43c66c72473baad6fa769e6b2288ebee67fad0339b380d789766"
+    },
+    {
+      "version": 2,
+      "layer": "Real context",
+      "word_count_whitespace": 344,
+      "thread_id": "01a0815f-a253-7de3-a981-23af2f9b72de",
+      "usage": {
+        "input_tokens": 22271,
+        "cached_input_tokens": 6144,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 460,
+        "reasoning_output_tokens": 0
+      },
+      "warnings": [],
+      "prompt_sha256": "68865e6cbac9148cad45384699f5fc5bcc6a79075abca6355313debc5813bb64",
+      "output_sha256": "bb2f173e69233b1ae8bd0013cf2782764dbf751ae1e43b36328d1113b7f450f3"
+    },
+    {
+      "version": 3,
+      "layer": "Defined audience",
+      "word_count_whitespace": 380,
+      "thread_id": "01a08160-281d-7792-a93f-10e8945bcc9a",
+      "usage": {
+        "input_tokens": 22294,
+        "cached_input_tokens": 6144,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 539,
+        "reasoning_output_tokens": 19
+      },
+      "warnings": [],
+      "prompt_sha256": "5d73b8da9e0bfb3ac8bf24f8b13eb1dd944c0813e879769bcbd7122812986da0",
+      "output_sha256": "e2ad41061409d5fc3abda1e7ff56611faec6eab2f4f58331b783492e75f892d5"
+    },
+    {
+      "version": 4,
+      "layer": "Constraints",
+      "word_count_whitespace": 410,
+      "thread_id": "01a08160-ce41-7c32-ade9-c4809ea3fd48",
+      "usage": {
+        "input_tokens": 23091,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 605,
+        "reasoning_output_tokens": 25
+      },
+      "warnings": [
+        "Skill descriptions were shortened to fit the skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest."
+      ],
+      "prompt_sha256": "eaa3f615531bab5e8cc64fa9f0171f48f535a4de814a79b2f9026f9569b6b382",
+      "output_sha256": "5ff8663a6bfb51bd81de9802c42fc716b144de7e2304bc2116b416a745622e27"
+    },
+    {
+      "version": 5,
+      "layer": "Specified output format",
+      "word_count_whitespace": 234,
+      "thread_id": "01a08161-5fbc-7c91-a981-e918b35b5602",
+      "usage": {
+        "input_tokens": 22395,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 386,
+        "reasoning_output_tokens": 27
+      },
+      "warnings": [],
+      "prompt_sha256": "121dcf02b28586dc73b4ae0ff341ff0a3341a3633cdb09aa0a5c4e46fba219c2",
+      "output_sha256": "82acab355f0f4920a25c004224791bec7dbe9046da430412b35f0a792c831921"
+    }
+  ]
+}

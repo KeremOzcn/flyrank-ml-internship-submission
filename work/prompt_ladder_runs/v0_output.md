@@ -1,0 +1,1 @@
+Please share the project’s README, code, notebook, architecture diagram, or a brief description. I’ll explain its goal, data flow, model, training/evaluation process, and key design choices.
