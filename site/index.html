@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kerem Özcan — ML Portfolio</title>
+  <meta name="description" content="I measure the baseline everyone assumes works — and report it when it loses to chance.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --ink: #16191C;
@@ -15,7 +16,12 @@
       --main: #2A5D63;
       --accent: #B4552F;
       --hairline: #D8DAD6;
+      --hairline-strong: #B8BCB6;
       --muted: #6B7280;
+      --chart-bg: #ffffff;
+      --chart-bar: #2A5D63;
+      --chart-bar-2: #B4552F;
+      --chart-bar-3: #6F4E7C;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -24,7 +30,12 @@
         --main: #63B3AD;
         --accent: #E08A5F;
         --hairline: #2A2D31;
+        --hairline-strong: #3A3D41;
         --muted: #9CA3AF;
+        --chart-bg: #1a1d21;
+        --chart-bar: #63B3AD;
+        --chart-bar-2: #E08A5F;
+        --chart-bar-3: #A78BC9;
       }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,10 +46,11 @@
       color: var(--ink);
       line-height: 1.65;
       font-size: 17px;
+      -webkit-font-smoothing: antialiased;
     }
     .mono { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
-    a { color: var(--main); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a { color: var(--main); text-decoration: none; transition: opacity 0.15s; }
+    a:hover { text-decoration: underline; opacity: 0.85; }
 
     /* Nav */
     nav {
@@ -51,177 +63,430 @@
       top: 0;
       background: var(--paper);
       z-index: 100;
+      backdrop-filter: blur(8px);
     }
-    nav .logo { font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; }
+    nav .logo { font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; display: flex; align-items: center; gap: 0.5rem; }
+    nav .logo img { width: 20px; height: 20px; }
     nav ul { display: flex; gap: 2rem; list-style: none; }
-    nav a { font-size: 0.95rem; }
+    nav a { font-size: 0.92rem; color: var(--ink); opacity: 0.7; }
+    nav a:hover { opacity: 1; text-decoration: none; }
+    nav a.active { color: var(--main); opacity: 1; font-weight: 500; }
     @media (max-width: 600px) {
-      nav { flex-direction: column; gap: 0.75rem; padding: 1rem; }
-      nav ul { gap: 1.25rem; }
+      nav { flex-direction: column; gap: 0.5rem; padding: 0.75rem 1rem; }
+      nav ul { gap: 1rem; }
     }
 
     /* Layout */
-    main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
-    section { margin-bottom: 4rem; }
-    h1 { font-weight: 600; font-size: 2.25rem; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.2; }
-    h2 { font-weight: 600; font-size: 1.5rem; letter-spacing: -0.02em; margin-bottom: 1.25rem; padding-top: 0.5rem; border-top: 1px solid var(--hairline); padding-top: 2rem; }
-    h3 { font-weight: 600; font-size: 1.15rem; margin-bottom: 0.75rem; margin-top: 2rem; }
-    p { margin-bottom: 1.25rem; }
-    .lead { font-size: 1.2rem; line-height: 1.6; margin-bottom: 2rem; opacity: 0.9; }
-    .claim { font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin-bottom: 2rem; }
+    main { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    section { margin-bottom: 3.5rem; }
+    h1 { font-weight: 700; font-size: 2.4rem; letter-spacing: -0.035em; margin-bottom: 1rem; line-height: 1.15; }
+    h2 { font-weight: 600; font-size: 1.4rem; letter-spacing: -0.02em; margin-bottom: 1rem; padding-top: 2.5rem; border-top: 1px solid var(--hairline); }
+    h3 { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.6rem; margin-top: 1.75rem; }
+    p { margin-bottom: 1.1rem; }
+    .lead { font-size: 1.15rem; line-height: 1.6; margin-bottom: 2rem; opacity: 0.85; }
+    .claim { font-size: 1.4rem; font-weight: 600; line-height: 1.35; margin-bottom: 0.5rem; letter-spacing: -0.015em; }
 
-    /* Chart / metric blocks */
-    .metric-row { display: flex; gap: 2rem; flex-wrap: wrap; margin: 1.5rem 0; }
-    .metric { text-align: left; }
-    .metric .num { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 2rem; color: var(--main); display: block; }
-    .metric .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
-    .metric.accent .num { color: var(--accent); }
+    /* Hero */
+    .hero-block { padding: 1rem 0 0.5rem; }
+    .hero-tag { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.78rem; color: var(--main); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+
+    /* Metrics */
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .metric-card { border: 1px solid var(--hairline); border-radius: 8px; padding: 1.25rem 1.5rem; }
+    .metric-card .num { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 1.85rem; display: block; margin-bottom: 0.3rem; letter-spacing: -0.02em; }
+    .metric-card .label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.3; }
+    .metric-card.accent .num { color: var(--accent); }
+    .metric-card.main .num { color: var(--main); }
+    .metric-card.muted .num { color: var(--muted); }
+
+    /* Comparison bar */
+    .cmp-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .cmp-label { width: 120px; font-size: 0.85rem; font-weight: 500; flex-shrink: 0; }
+    .cmp-bar-bg { flex: 1; height: 28px; background: var(--hairline); border-radius: 4px; overflow: hidden; position: relative; }
+    .cmp-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.78rem; color: white; }
+    .cmp-bar-fill.baseline { background: var(--accent); }
+    .cmp-bar-fill.model { background: var(--main); }
+    .cmp-bar-fill.baserate { background: var(--muted); }
 
     /* CTA */
     .cta {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       font-family: 'IBM Plex Mono', monospace;
       font-weight: 500;
-      font-size: 0.9rem;
-      padding: 0.75rem 1.5rem;
+      font-size: 0.88rem;
+      padding: 0.7rem 1.5rem;
       border: 1.5px solid var(--main);
       color: var(--main);
-      border-radius: 4px;
-      margin: 1rem 0 2rem;
-      transition: background 0.2s, color 0.2s;
+      border-radius: 6px;
+      margin: 0.75rem 0 1.5rem;
+      transition: all 0.2s;
     }
     .cta:hover { background: var(--main); color: var(--paper); text-decoration: none; }
+    .cta-arrow { font-size: 1rem; }
 
-    /* Case study */
-    .case-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
-    .case-meta span { margin-right: 1.5rem; }
+    /* Tables */
+    .data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem; }
+    .data-table th { text-align: left; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 0.6rem 0.75rem; border-bottom: 2px solid var(--hairline-strong); }
+    .data-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--hairline); font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+    .data-table td.text-col { font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; }
+    .data-table tr:hover td { background: rgba(42, 93, 99, 0.04); }
+    .data-table .highlight td { color: var(--main); }
+    @media (prefers-color-scheme: dark) { .data-table tr:hover td { background: rgba(99, 179, 173, 0.06); } }
+
+    /* Chart container */
+    .chart-block { margin: 2rem 0; border: 1px solid var(--hairline); border-radius: 8px; overflow: hidden; }
+    .chart-block .chart-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--hairline); font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .chart-block svg { width: 100%; height: auto; display: block; background: var(--chart-bg); }
+
+    /* Case meta */
+    .case-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--hairline); }
+    .case-meta strong { color: var(--ink); font-weight: 600; }
+
+    /* Lists */
     ul { padding-left: 1.25rem; margin-bottom: 1.25rem; }
     li { margin-bottom: 0.5rem; }
     strong { font-weight: 600; }
 
     /* Code */
-    code, pre { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.9rem; }
-    pre {
-      background: var(--hairline);
-      padding: 1rem 1.25rem;
-      border-radius: 6px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      opacity: 0.95;
-    }
-    @media (prefers-color-scheme: dark) { pre { background: rgba(255,255,255,0.05); } }
+    code { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.88rem; background: var(--hairline); padding: 0.1rem 0.35rem; border-radius: 3px; }
+    pre { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.88rem; background: var(--hairline); padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0; line-height: 1.5; }
+    @media (prefers-color-scheme: dark) { code, pre { background: rgba(255,255,255,0.06); } }
+
+    /* Callout */
+    .callout { border-left: 3px solid var(--main); padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: rgba(42, 93, 99, 0.04); border-radius: 0 6px 6px 0; font-size: 0.95rem; }
+    .callout.accent { border-left-color: var(--accent); background: rgba(180, 85, 47, 0.04); }
+    @media (prefers-color-scheme: dark) { .callout { background: rgba(99, 179, 173, 0.06); } .callout.accent { background: rgba(224, 138, 95, 0.06); } }
 
     /* Form */
     .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
     .form-group input, .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1.5px solid var(--hairline);
-      border-radius: 4px;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 1rem;
-      transition: border-color 0.2s;
+      width: 100%; padding: 0.7rem 1rem; border: 1.5px solid var(--hairline-strong); border-radius: 6px;
+      background: var(--paper); color: var(--ink); font-family: inherit; font-size: 1rem; transition: border-color 0.2s;
     }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--main); outline: none; }
     .form-group textarea { min-height: 120px; resize: vertical; }
     .btn-submit {
-      font-family: 'IBM Plex Mono', monospace;
-      font-weight: 500;
-      font-size: 0.9rem;
-      padding: 0.75rem 1.75rem;
-      background: var(--main);
-      color: var(--paper);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: opacity 0.2s;
+      font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.88rem;
+      padding: 0.7rem 1.75rem; background: var(--main); color: var(--paper); border: none; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;
     }
     .btn-submit:hover { opacity: 0.85; }
-    .form-status { margin-top: 1rem; font-size: 0.95rem; }
+    .form-status { margin-top: 1rem; font-size: 0.95rem; padding: 0.5rem 0; }
     .form-status.success { color: var(--main); }
     .form-status.error { color: var(--accent); }
 
-    footer { border-top: 1px solid var(--hairline); padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; color: var(--muted); }
-    footer a { margin: 0 0.5rem; }
+    /* Footer */
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 1.5rem; text-align: center; font-size: 0.82rem; color: var(--muted); }
+    footer a { margin: 0 0.4rem; }
 
-    /* Hide sections for SPA-like nav */
+    /* Page nav */
     .page { display: none; }
     .page.active { display: block; }
+
+    /* Pipeline diagram */
+    .pipeline { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; }
+    .pipeline-step { flex: 1; min-width: 120px; padding: 0.75rem 1rem; border: 1px solid var(--hairline); border-radius: 6px; font-size: 0.85rem; }
+    .pipeline-step .step-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--main); font-weight: 500; display: block; margin-bottom: 0.2rem; }
+    .pipeline-step .step-name { font-weight: 500; }
+    .pipeline-arrow { display: flex; align-items: center; color: var(--muted); }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .page.active { animation: fadeIn 0.3s ease; }
   </style>
 </head>
 <body>
   <nav>
-    <div class="logo">Kerem Özcan</div>
+    <div class="logo">
+      <img src="favicon.svg" alt="logo">
+      Kerem Özcan
+    </div>
     <ul>
-      <li><a href="#home" onclick="showPage('home')">Home</a></li>
-      <li><a href="#work" onclick="showPage('work')">Work</a></li>
-      <li><a href="#method" onclick="showPage('method')">How I Work</a></li>
-      <li><a href="#contact" onclick="showPage('contact')">Contact</a></li>
+      <li><a href="#home" data-page="home" class="active">Home</a></li>
+      <li><a href="#work" data-page="work">Work</a></li>
+      <li><a href="#method" data-page="method">How I Work</a></li>
+      <li><a href="#contact" data-page="contact">Contact</a></li>
     </ul>
   </nav>
 
   <main>
-    <!-- HOME -->
+    <!-- ===== HOME ===== -->
     <div id="home" class="page active">
-      <section>
+      <section class="hero-block">
+        <p class="hero-tag">Applied ML · Content Refresh Ranking</p>
         <p class="claim">I measure the baseline everyone assumes works — and report it when it loses to chance.</p>
-        <hr style="border:none; border-top: 1px solid var(--hairline); margin: 2rem 0;">
-
-        <h2>The measured result</h2>
-        <div class="metric-row">
-          <div class="metric accent">
-            <span class="num">44.0%</span>
-            <span class="label">Stale-first rule · Precision@50</span>
-          </div>
-          <div class="metric">
-            <span class="num">60.4%</span>
-            <span class="label">Random selection expectation</span>
-          </div>
-        </div>
-        <p>On a 21,758-page eligible slice of FlyRank's anonymized search data, the stale-first rule — "review the oldest popular pages first" — found declining pages in only 22 of its first 50 recommendations. Random selection from the same slice would have found 30. The rule lost to chance by 16.4 percentage points.</p>
-        <p>On the full 30,000-row pipeline with client-holdout validation (run by me on September 9, 2026), a random forest reached <span class="mono">Precision@50 = 0.740</span> — a 3.1× lift over the stale-first baseline (<span class="mono">0.240</span>) and 19.8pp above the 54.2% base rate. <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/outputs/model_results.json" target="_blank">View the raw metrics →</a></p>
-
-        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">Inspect the notebook →</a>
+        <p style="font-size: 1rem; color: var(--muted); margin-bottom: 0;">ML intern working on search performance and content review prioritization. This portfolio shows the task framing, the baseline that failed, the model that beat it, and the limits of the result.</p>
       </section>
+
+      <h2>The headline</h2>
+      <p>On 30,000 anonymized content pages from 32 pseudonymized clients, I compared a stale-first review rule against a random forest ranking model. The rule everyone assumes works — "review the oldest popular pages first" — lost to random chance. The model beat both.</p>
+
+      <!-- Precision@50 comparison bars -->
+      <h3>Precision@50 — baseline vs model vs base rate</h3>
+      <div style="margin: 1.5rem 0;">
+        <div class="cmp-row">
+          <div class="cmp-label">Stale-first rule</div>
+          <div class="cmp-bar-bg"><div class="cmp-bar-fill baseline" style="width: 32.4%;">0.240</div></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-label">Random forest</div>
+          <div class="cmp-bar-bg"><div class="cmp-bar-fill model" style="width: 100%;">0.740</div></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-label">Base rate</div>
+          <div class="cmp-bar-bg"><div class="cmp-bar-fill baserate" style="width: 73.2%;">0.542</div></div>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card accent">
+          <span class="num">0.240</span>
+          <span class="label">Baseline · Precision@50</span>
+        </div>
+        <div class="metric-card main">
+          <span class="num">0.740</span>
+          <span class="label">Random Forest · Precision@50</span>
+        </div>
+        <div class="metric-card muted">
+          <span class="num">0.542</span>
+          <span class="label">Base rate (positive class)</span>
+        </div>
+        <div class="metric-card main">
+          <span class="num">3.1×</span>
+          <span class="label">Lift over baseline</span>
+        </div>
+      </div>
+
+      <div class="callout accent">
+        <strong>The finding that justifies the model:</strong> On a 21,758-page eligible slice, the stale-first rule found declining pages in <span class="mono">22/50</span> slots (44.0%). Random selection from the same slice would have found <span class="mono">30/50</span> (60.4%). The rule lost to chance by 16.4 percentage points.
+      </div>
+
+      <p>All metrics from a fresh <code>python scripts/run_all.py</code> on September 9, 2026. <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/outputs/model_results.json" target="_blank">View the raw JSON →</a></p>
+
+      <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission" target="_blank">Inspect the repo <span class="cta-arrow">→</span></a>
     </div>
 
-    <!-- WORK -->
+    <!-- ===== WORK ===== -->
     <div id="work" class="page">
       <section>
+        <p class="hero-tag">Case Study</p>
         <h1>FlyRank: checking a content refresh rule before building a model</h1>
-        <p class="case-meta">
-          <span><strong>Status:</strong> Task framing and baseline complete</span>
-          <span><strong>Dataset:</strong> 30,000 anonymized pages · 32 clients</span>
-        </p>
+        <div class="case-meta">
+          <span><strong>Status:</strong> Framing + baseline + model complete</span>
+          <span><strong>Dataset:</strong> 30,000 pages · 32 clients</span>
+          <span><strong>Split:</strong> Client-holdout</span>
+          <span><strong>Run:</strong> Sept 9, 2026</span>
+        </div>
 
         <h2>The problem</h2>
-        <p>A content team has more pages than it can review at once. Page age alone is an easy way to build a queue, but being old does not necessarily mean a page needs attention. The decision I framed was: which pages should an editor inspect first for a possible refresh?</p>
+        <p>A content team has more pages than it can review at once. Page age alone is an easy way to build a queue, but being old does not necessarily mean a page needs attention. The decision I framed was: <strong>which pages should an editor inspect first for a possible refresh?</strong></p>
+        <p>Unit of analysis: one content page. Output: a ranked review queue with priority scores and reason codes. Action: an editor inspects each page, then decides whether to update, expand, revise metadata, or leave it alone.</p>
 
-        <h2>What I did</h2>
-        <p>I used FlyRank's starter dataset: 30,000 anonymized content pages across 32 clients. It contains search activity and freshness signals, but no record showing that a refresh helped. That limits what I can call a result.</p>
-        <p>I kept pages with at least 100 impressions over 90 days and a nonzero previous 30-day impression count — leaving 21,758 pages with enough visibility for a provisional screen. I used observed impression decline as a proxy for review relevance: the dataset labels a page "down" when impressions fell by more than 20% between two 30-day windows.</p>
-        <p>I separated the label from the working signals, documented that the remaining 90-day metrics overlap the decline window, and built a stale-first baseline before training any model.</p>
+        <h2>The data</h2>
+        <p>FlyRank's starter dataset: 30,000 anonymized content pages across 32 pseudonymized clients. 44 columns of search activity and freshness signals. No client names, URLs, titles, or keywords.</p>
+        <div class="callout">
+          <strong>Leakage guard:</strong> The label <code>is_declining_label</code> is defined as <code>trend_direction == "down"</code>. The columns <code>trend_direction</code> and <code>trend_pct</code> are excluded from all features. Client IDs are used for the grouped split only — never as model input.
+        </div>
+
+        <h2>The baseline</h2>
+        <p>Stale-first rule: sort by <code>days_since_last_update</code> descending, then by <code>impressions_90d</code> descending. The oldest, most-visible pages come first.</p>
+        <p>This is the rule a content team would build without ML. It's a fair comparison because it uses only signals available before any model, and it produces a total ordering evaluable at Precision@K.</p>
+        <div class="callout accent">
+          <strong>Result:</strong> The stale-first rule reached <span class="mono">Precision@50 = 0.240</span> on the client-holdout split — <strong>below the 0.542 base rate</strong>. Sorting by staleness + visibility is worse than random at finding declining pages.
+        </div>
+
+        <h2>The model</h2>
+        <p>Random forest classifier, selected by Precision@50. 52 features: 18 numeric (log-transformed activity totals, content age, CTR, position, engagement) + 8 categorical (one-hot encoded: content type, intent, age tier, freshness tier, etc.).</p>
+
+        <h3>Model comparison — same split, same metric</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Precision@50</th>
+              <th>Precision@100</th>
+              <th>ROC AUC</th>
+              <th>Avg Precision</th>
+              <th>Recall</th>
+              <th>F1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-col">Stale-first baseline</td>
+              <td style="color: var(--accent);">0.240</td>
+              <td>0.360</td>
+              <td>0.627</td>
+              <td>0.468</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="text-col">Logistic regression</td>
+              <td>0.400</td>
+              <td>0.440</td>
+              <td>0.700</td>
+              <td>0.522</td>
+              <td>0.567</td>
+              <td>0.566</td>
+            </tr>
+            <tr>
+              <td class="text-col">Decision tree</td>
+              <td>0.540</td>
+              <td>0.530</td>
+              <td>0.742</td>
+              <td>0.575</td>
+              <td>0.716</td>
+              <td>0.634</td>
+            </tr>
+            <tr class="highlight">
+              <td class="text-col">Random forest</td>
+              <td style="color: var(--main); font-weight: 700;">0.740</td>
+              <td style="color: var(--main);">0.720</td>
+              <td style="color: var(--main);">0.750</td>
+              <td style="color: var(--main);">0.618</td>
+              <td style="color: var(--main);">0.744</td>
+              <td style="color: var(--main);">0.640</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Top 10 feature importances</h3>
+        <div class="chart-block">
+          <div class="chart-header">Feature importance — random forest</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="100%" style="background: var(--chart-bg);">
+            <rect width="100%" height="100%" fill="var(--chart-bg)"/>
+            <text x="480" y="34" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Top model features</text>
+            <g font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="var(--ink)">
+              <text x="178" y="85.7" text-anchor="end">days_with_impressions</text>
+              <rect x="190" y="70" width="115.2" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="313.2" y="85.7" font-family="'IBM Plex Mono',monospace" font-size="12">0.158</text>
+
+              <text x="178" y="119.9" text-anchor="end">log_impressions_90d</text>
+              <rect x="190" y="104.2" width="93.6" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="291.6" y="119.9" font-family="'IBM Plex Mono',monospace" font-size="12">0.128</text>
+
+              <text x="178" y="154" text-anchor="end">avg_position</text>
+              <rect x="190" y="138.3" width="79.6" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="277.6" y="154" font-family="'IBM Plex Mono',monospace" font-size="12">0.109</text>
+
+              <text x="178" y="188.2" text-anchor="end">content_age_days</text>
+              <rect x="190" y="172.5" width="69.7" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="267.7" y="188.2" font-family="'IBM Plex Mono',monospace" font-size="12">0.096</text>
+
+              <text x="178" y="222.4" text-anchor="end">char_count</text>
+              <rect x="190" y="206.7" width="31.1" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="229.1" y="222.4" font-family="'IBM Plex Mono',monospace" font-size="12">0.043</text>
+
+              <text x="178" y="256.5" text-anchor="end">word_count</text>
+              <rect x="190" y="240.8" width="29" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="227" y="256.5" font-family="'IBM Plex Mono',monospace" font-size="12">0.040</text>
+
+              <text x="178" y="290.7" text-anchor="end">log_clicks_90d</text>
+              <rect x="190" y="275" width="25.2" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="223.2" y="290.7" font-family="'IBM Plex Mono',monospace" font-size="12">0.035</text>
+
+              <text x="178" y="324.9" text-anchor="end">ctr</text>
+              <rect x="190" y="309.2" width="24.1" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="222.1" y="324.9" font-family="'IBM Plex Mono',monospace" font-size="12">0.033</text>
+
+              <text x="178" y="359" text-anchor="end">scroll_rate</text>
+              <rect x="190" y="343.3" width="22.7" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="220.7" y="359" font-family="'IBM Plex Mono',monospace" font-size="12">0.031</text>
+
+              <text x="178" y="393.2" text-anchor="end">days_with_sessions</text>
+              <rect x="190" y="377.5" width="20.4" height="24.2" fill="var(--chart-bar)" rx="4"/>
+              <text x="218.4" y="393.2" font-family="'IBM Plex Mono',monospace" font-size="12">0.028</text>
+            </g>
+          </svg>
+        </div>
+
+        <h3>Suggested action mix</h3>
+        <div class="chart-block">
+          <div class="chart-header">Action distribution across 30,000 pages</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="100%" style="background: var(--chart-bg);">
+            <rect width="100%" height="100%" fill="var(--chart-bg)"/>
+            <text x="480" y="34" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Suggested action mix</text>
+            <g font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="var(--ink)">
+              <text x="178" y="116.8" text-anchor="end">monitor</text>
+              <rect x="190" y="70" width="730" height="72" fill="var(--chart-bar)" rx="4"/>
+              <text x="928" y="116.8" font-family="'IBM Plex Mono',monospace" font-size="12">13,093</text>
+
+              <text x="178" y="198.8" text-anchor="end">refresh</text>
+              <rect x="190" y="152" width="456" height="72" fill="var(--chart-bar-2)" rx="4"/>
+              <text x="654" y="198.8" font-family="'IBM Plex Mono',monospace" font-size="12">8,178</text>
+
+              <text x="178" y="280.8" text-anchor="end">refresh_and_review_ctr</text>
+              <rect x="190" y="234" width="371.2" height="72" fill="var(--chart-bar-3)" rx="4"/>
+              <text x="569.2" y="280.8" font-family="'IBM Plex Mono',monospace" font-size="12">6,657</text>
+
+              <text x="178" y="362.8" text-anchor="end">refresh_and_review_engagement</text>
+              <rect x="190" y="316" width="111" height="72" fill="var(--chart-bar-3)" rx="4"/>
+              <text x="309" y="362.8" font-family="'IBM Plex Mono',monospace" font-size="12">1,990</text>
+
+              <text x="178" y="444.8" text-anchor="end">expand_and_refresh</text>
+              <rect x="190" y="398" width="4.6" height="72" fill="var(--accent)" rx="4"/>
+              <text x="202.6" y="444.8" font-family="'IBM Plex Mono',monospace" font-size="12">82</text>
+            </g>
+          </svg>
+        </div>
+
+        <h3>Trend direction distribution</h3>
+        <div class="chart-block">
+          <div class="chart-header">Label distribution</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="100%" style="background: var(--chart-bg);">
+            <rect width="100%" height="100%" fill="var(--chart-bg)"/>
+            <text x="480" y="34" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Trend direction distribution</text>
+            <g font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="var(--ink)">
+              <text x="178" y="116.8" text-anchor="end">down (label=1)</text>
+              <rect x="190" y="70" width="730" height="72" fill="var(--accent)" rx="4"/>
+              <text x="928" y="116.8" font-family="'IBM Plex Mono',monospace" font-size="12">16,262</text>
+
+              <text x="178" y="198.8" text-anchor="end">stable</text>
+              <rect x="190" y="152" width="267.6" height="72" fill="var(--chart-bar)" rx="4"/>
+              <text x="465.6" y="198.8" font-family="'IBM Plex Mono',monospace" font-size="12">5,960</text>
+
+              <text x="178" y="280.8" text-anchor="end">up</text>
+              <rect x="190" y="234" width="197" height="72" fill="var(--chart-bar)" rx="4"/>
+              <text x="395" y="280.8" font-family="'IBM Plex Mono',monospace" font-size="12">4,390</text>
+
+              <text x="178" y="362.8" text-anchor="end">new</text>
+              <rect x="190" y="316" width="100.4" height="72" fill="var(--chart-bar-3)" rx="4"/>
+              <text x="298.4" y="362.8" font-family="'IBM Plex Mono',monospace" font-size="12">2,240</text>
+
+              <text x="178" y="444.8" text-anchor="end">flat</text>
+              <rect x="190" y="398" width="51.7" height="72" fill="var(--muted)" rx="4"/>
+              <text x="249.7" y="444.8" font-family="'IBM Plex Mono',monospace" font-size="12">1,150</text>
+            </g>
+          </svg>
+        </div>
+
+        <h2>The pipeline</h2>
+        <div class="pipeline">
+          <div class="pipeline-step"><span class="step-num">01</span><span class="step-name">Prepare features</span></div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">02</span><span class="step-name">Baseline score</span></div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">03</span><span class="step-name">Train models</span></div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">04</span><span class="step-name">Evaluate + export</span></div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">05</span><span class="step-name">PDF report</span></div>
+        </div>
+        <pre><code>git clone https://github.com/KeremOzcn/flyrank-ml-internship-submission.git
+cd flyrank-ml-internship-submission
+pip install -r requirements.txt
+python scripts/run_all.py</code></pre>
 
         <h2>What came of it</h2>
-        <div class="metric-row">
-          <div class="metric accent">
-            <span class="num">0.240</span>
-            <span class="label">Baseline Precision@50</span>
-          </div>
-          <div class="metric">
-            <span class="num">0.740</span>
-            <span class="label">Random Forest Precision@50</span>
-          </div>
-          <div class="metric">
-            <span class="num">0.542</span>
-            <span class="label">Base rate (positive class)</span>
-          </div>
+        <div class="metric-grid">
+          <div class="metric-card accent"><span class="num">0.240</span><span class="label">Baseline P@50</span></div>
+          <div class="metric-card main"><span class="num">0.740</span><span class="label">Random Forest P@50</span></div>
+          <div class="metric-card muted"><span class="num">+19.8pp</span><span class="label">Above base rate</span></div>
+          <div class="metric-card main"><span class="num">3.1×</span><span class="label">Lift over baseline</span></div>
         </div>
-        <p>The stale-first rule reached <span class="mono">Precision@50 = 44.0%</span> on my filtered slice — below the <span class="mono">60.4%</span> random expectation. On the full pipeline with client-holdout validation (run by me, Sept 9 2026), the random forest reached <span class="mono">Precision@50 = 0.740</span>, a 3.1× lift over the baseline.</p>
-        <p>The deliverable is a reproducible framing notebook, a baseline to challenge, and a ranked review queue with reason codes. An editor still inspects each page before choosing whether to update facts, expand coverage, revise metadata, or leave it alone.</p>
 
         <h2>Limits</h2>
         <ul>
@@ -230,41 +495,77 @@
           <li>No held-out evaluation on a separately collected dataset has been performed.</li>
         </ul>
 
-        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">Open the executed notebook →</a>
+        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/capstone_report.md" target="_blank">Read the full capstone report <span class="cta-arrow">→</span></a>
+        <br>
+        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">Open the notebook <span class="cta-arrow">→</span></a>
       </section>
     </div>
 
-    <!-- HOW I WORK -->
+    <!-- ===== HOW I WORK ===== -->
     <div id="method" class="page">
       <section>
+        <p class="hero-tag">Methodology</p>
         <h1>How I work</h1>
+        <p class="lead">Four habits that showed up in every decision on this project. They are not unique to ML — they are how I make sure a result I report is a result I can defend.</p>
 
-        <h2>Baseline before model</h2>
+        <h2>1. Baseline before model</h2>
         <p>I build a transparent rule first — one a content team would naturally build without ML — and measure it on the same data and metric as the model. If the baseline is below base rate, the model has a clear job. If the baseline is already good, the model needs to justify its complexity.</p>
+        <div class="callout">
+          In this project, the stale-first baseline reached <span class="mono">Precision@50 = 0.240</span> — below the <span class="mono">0.542</span> base rate. The model wasn't competing with a good rule. It was competing with a rule that's worse than flipping a coin.
+        </div>
 
-        <h2>Leak-hunting</h2>
-        <p>I check every feature against the label definition. In this project, <span class="mono">trend_direction</span> and <span class="mono">trend_pct</span> define the label — including them as features would be direct leakage. I also split by client (not randomly) so the model can't memorize client-specific patterns.</p>
+        <h2>2. Leak-hunting</h2>
+        <p>I check every feature against the label definition. In this project, <code>trend_direction</code> and <code>trend_pct</code> define the label — including them as features would be direct leakage. I also split by client (not randomly) so the model can't memorize client-specific patterns and test on the same clients it trained on.</p>
+        <p>The split: <strong>client-holdout</strong>. 80% of clients (27,675 rows) for training, 20% (2,325 rows) for testing. No client appears in both sets.</p>
 
-        <h2>Receipts beside claims</h2>
-        <p>Every number in my report traces to a committed JSON file (<span class="mono">outputs/model_results.json</span>). Re-running <span class="mono">python scripts/run_all.py</span> from a fresh clone reproduces every metric. No headline is taken on faith.</p>
+        <h2>3. Receipts beside claims</h2>
+        <p>Every number in my report traces to a committed JSON file. Re-running <code>python scripts/run_all.py</code> from a fresh clone reproduces every metric. No headline is taken on faith.</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Claim</th><th>Source file</th><th>Verifiable?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="text-col">Baseline P@50 = 0.240</td><td class="text-col">outputs/model_results.json</td><td style="color: var(--main);">✓</td></tr>
+            <tr><td class="text-col">RF P@50 = 0.740</td><td class="text-col">outputs/model_results.json</td><td style="color: var(--main);">✓</td></tr>
+            <tr><td class="text-col">Base rate = 0.542</td><td class="text-col">outputs/model_results.json</td><td style="color: var(--main);">✓</td></tr>
+            <tr><td class="text-col">Feature count = 52</td><td class="text-col">outputs/model_results.json</td><td style="color: var(--main);">✓</td></tr>
+            <tr><td class="text-col">Split = client_holdout</td><td class="text-col">outputs/model_results.json</td><td style="color: var(--main);">✓</td></tr>
+            <tr><td class="text-col">Queue output</td><td class="text-col">outputs/refresh_queue.csv</td><td style="color: var(--main);">✓</td></tr>
+          </tbody>
+        </table>
 
-        <h2>Where AI helped</h2>
-        <p>I used AI to draft boilerplate pandas code, generate docstrings, and pressure-test my framing. The analytical decisions, the interpretation, and the honest reporting of a baseline that lost to chance — those are mine. The prompt iteration log shows the actual back-and-forth.</p>
+        <h2>4. Where AI helped</h2>
+        <p>I used AI to draft boilerplate pandas code, generate docstrings, and pressure-test my framing. The analytical decisions — which baseline to build, which features to exclude, how to interpret a result that lost to chance — those are mine. The prompt iteration log shows the actual back-and-forth.</p>
 
-        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/fl04_prompt_iteration_log.md" target="_blank">Read the prompt iteration log →</a>
+        <div class="callout accent">
+          <strong>What I will not do:</strong> claim a result I did not measure. The original proof statement cited "~3× Precision@50" using the starter repo's reference numbers. I ran the pipeline myself, confirmed the same numbers, but rewrote the claim to lead with the <em>baseline failure</em> — because that's the finding that justifies the model, not the lift.
+        </div>
+
+        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/fl04_prompt_iteration_log.md" target="_blank">Read the prompt iteration log <span class="cta-arrow">→</span></a>
       </section>
     </div>
 
-    <!-- CONTACT -->
+    <!-- ===== CONTACT ===== -->
     <div id="contact" class="page">
       <section>
-        <h1>Contact</h1>
+        <p class="hero-tag">Contact</p>
+        <h1>Let's talk</h1>
         <p class="lead">If you're evaluating how I approach an applied ML problem, start with the notebook. It shows the task choice, the dataframe, the rule comparison, and the limits of the result.</p>
 
-        <p>
-          <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission" target="_blank">GitHub repo →</a><br>
-          <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/capstone_report.md" target="_blank">Capstone report →</a>
-        </p>
+        <div style="margin: 1.5rem 0;">
+          <p style="margin-bottom: 0.5rem;">
+            <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission" target="_blank">→ GitHub repo</a>
+          </p>
+          <p style="margin-bottom: 0.5rem;">
+            <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/capstone_report.md" target="_blank">→ Capstone report</a>
+          </p>
+          <p style="margin-bottom: 0.5rem;">
+            <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">→ Executed notebook</a>
+          </p>
+          <p style="margin-bottom: 0.5rem;">
+            <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/outputs/model_results.json" target="_blank">→ Raw metrics (JSON)</a>
+          </p>
+        </div>
 
         <h2>Send me a message</h2>
         <form id="contact-form" action="https://formspree.io/f/xbgjqdrw" method="POST">
@@ -284,10 +585,9 @@
           <p class="form-status" id="form-status" style="display:none;"></p>
         </form>
 
-        <h2>How the form works</h2>
-        <p style="font-size: 0.9rem; color: var(--muted);">
-          This form is handled by <a href="https://formspree.io" target="_blank">Formspree</a>, a free form-processing service — no server required. When you submit, your message goes from this page to Formspree's endpoint, which emails it to my inbox. No data is stored on this site; Formspree holds the submission temporarily and forwards it. The page never touches a backend of its own.
-        </p>
+        <div class="callout" style="margin-top: 2rem;">
+          <strong>How this form works:</strong> Handled by <a href="https://formspree.io" target="_blank">Formspree</a> — a free form-processing service, no server required. Your message goes from this page to Formspree's endpoint, which emails it to my inbox. No data is stored on this site; the page never touches a backend of its own.
+        </div>
       </section>
     </div>
   </main>
@@ -295,33 +595,41 @@
   <footer>
     <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission" target="_blank">GitHub</a> ·
     Built on the <a href="https://flyrank.ai" target="_blank">FlyRank</a> ML Internship dataset ·
-    <span class="mono">IBM Plex Sans / Mono</span>
+    <span class="mono">IBM Plex Sans / Mono</span> ·
+    <span class="mono">ink #16191C · paper #F6F7F5 · teal #2A5D63</span>
   </footer>
 
   <script>
     function showPage(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav a[data-page]').forEach(a => a.classList.remove('active'));
+      const activeLink = document.querySelector('nav a[data-page="' + id + '"]');
+      if (activeLink) activeLink.classList.add('active');
       window.scrollTo(0, 0);
+      history.replaceState(null, '', '#' + id);
     }
 
     // Handle initial hash
     if (location.hash) {
-      showPage(location.hash.slice(1));
+      const h = location.hash.slice(1);
+      if (['home','work','method','contact'].includes(h)) showPage(h);
     }
 
-    // Form handling
+    // Nav links
+    document.querySelectorAll('nav a[data-page]').forEach(a => {
+      a.addEventListener('click', e => { e.preventDefault(); showPage(a.dataset.page); });
+    });
+
+    // Form
     const form = document.getElementById('contact-form');
     const status = document.getElementById('form-status');
-
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       const data = new FormData(form);
       try {
         const res = await fetch(form.action, {
-          method: 'POST',
-          body: data,
-          headers: { 'Accept': 'application/json' }
+          method: 'POST', body: data, headers: { 'Accept': 'application/json' }
         });
         if (res.ok) {
           status.textContent = 'Thanks — your message reached me. I will be in touch.';
@@ -330,16 +638,12 @@
           form.reset();
         } else {
           const json = await res.json();
-          if (json && json.errors) {
-            status.textContent = json.errors.map(e => e.message).join(', ');
-          } else {
-            status.textContent = 'Something went wrong. Please try emailing me directly.';
-          }
+          status.textContent = (json && json.errors) ? json.errors.map(e => e.message).join(', ') : 'Something went wrong. Please email me directly.';
           status.className = 'form-status error';
           status.style.display = 'block';
         }
       } catch(err) {
-        status.textContent = 'Network error. Please check your connection and try again.';
+        status.textContent = 'Network error. Please check your connection.';
         status.className = 'form-status error';
         status.style.display = 'block';
       }
