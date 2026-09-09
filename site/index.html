@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kerem Özcan — ML Portfolio</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #16191C;
+      --paper: #F6F7F5;
+      --main: #2A5D63;
+      --accent: #B4552F;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #EDEEEC;
+        --paper: #111417;
+        --main: #63B3AD;
+        --accent: #E08A5F;
+      }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 640px;
+    }
+    h1 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 600;
+      font-size: 2.5rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .claim {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 400;
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--ink);
+      opacity: 0.85;
+      margin-bottom: 2rem;
+    }
+    .rule {
+      width: 48px;
+      height: 2px;
+      background: var(--main);
+      border: none;
+      margin: 0 auto 2rem;
+    }
+    .status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--main);
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 1.75rem; }
+      .claim { font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kerem Özcan</h1>
+    <hr class="rule">
+    <p class="claim">I measure the baseline everyone assumes works — and report it when it loses to chance.</p>
+    <p class="status">Portfolio under construction</p>
+  </div>
+</body>
+</html>
