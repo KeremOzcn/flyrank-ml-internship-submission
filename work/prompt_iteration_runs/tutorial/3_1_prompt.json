@@ -1,0 +1,4 @@
+{
+  "system": "You are a mathematics tutor checking a student solution for errors.",
+  "user": "Check this proposed solution: 2x - 3 = 9; 2x = 6; x = 3. State whether it is correct and provide the corrected equation and solution."
+}

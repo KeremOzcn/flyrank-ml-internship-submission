@@ -1,0 +1,170 @@
+{
+  "assignment": "FL-04 prompt iteration log",
+  "date": "2026-09-08",
+  "source_task": "FL-01 Target Task 3 - Technical Markdown & Research Report Synthesis",
+  "task_evidence_file": "task_evidence.json",
+  "claude_harness": {
+    "cli": "claude (Claude Code) 2.1.250",
+    "model_requested": "sonnet",
+    "model_resolved": "claude-sonnet-5",
+    "flags": [
+      "-p",
+      "--setting-sources ''",
+      "--system-prompt ''",
+      "--exclude-dynamic-system-prompt-sections",
+      "--strict-mcp-config",
+      "--tools ''",
+      "--output-format json"
+    ],
+    "why_these_flags": "Tools, MCP servers, hooks, plugins and project/user CLAUDE.md are all disabled so the run measures the prompt only. An earlier attempt without --tools '' and --setting-sources '' was discarded: with tools enabled the model read the repository, found task_evidence.json and the later prompt files, and answered the naive prompt with a v5-quality report. Those contaminated outputs are not part of this log.",
+    "sampling_controls": "None available through the CLI; temperature and seed are not exposed. Single run per version.",
+    "cwd_at_runtime": "scratchpad directory outside the repository (no project CLAUDE.md in scope)"
+  },
+  "chatgpt_harness": {
+    "cli": "codex-cli 0.148.0",
+    "status": "complete: 3 runs of v5_prompt.txt at 2026-09-08 21:42-21:52 (+03), after an afternoon block on the ChatGPT account usage limit",
+    "flags": ["--ignore-user-config", "--ignore-rules", "--skip-git-repo-check", "--ephemeral", "-s read-only", "-C <neutral dir outside repo>", "--json"],
+    "harness_note": "codex exec exposes no way to remove its agent system prompt; every call carried 22,649-23,534 input tokens of scaffolding versus 2-278 on the Claude side. Cross-model differences confound model with wrapper.",
+    "discarded_runs": "one replicate run from inside the repo made 10 shell calls (147,661 input tokens) searching for the source notebook; quarantined in crossmodel/discarded/ and re-run from a neutral cwd",
+    "details": "see crossmodel/README.md, crossmodel/codex_retry_log.txt, crossmodel/codex_v5*_events.jsonl"
+  },
+  "runs": [
+    {
+      "version": 0,
+      "technique_added": "Naive baseline (no technique)",
+      "prompt_file": "v0_prompt.txt",
+      "output_file": "v0_output.md",
+      "prompt_word_count_whitespace": 7,
+      "output_word_count_whitespace": 158,
+      "model_ids_billed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5"
+      ],
+      "usage": {
+        "input_tokens": 278,
+        "output_tokens": 356,
+        "cache_read_input_tokens": 0
+      },
+      "duration_ms": 5490,
+      "total_cost_usd": 0.005071,
+      "session_id": "fa6e7af0-aade-4dba-b047-669a41b6797b",
+      "prompt_sha256": "a9678298c833f480dbf1588994a99267dc086c71484891ec2d8269d9b75ee12f",
+      "output_sha256": "f9e3a93e0ce213e9ef537f487df72b80a3a3e41c307b81ceba94e627deeb31a7"
+    },
+    {
+      "version": 1,
+      "technique_added": "Role assignment",
+      "prompt_file": "v1_prompt.txt",
+      "output_file": "v1_output.md",
+      "prompt_word_count_whitespace": 15,
+      "output_word_count_whitespace": 205,
+      "model_ids_billed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5"
+      ],
+      "usage": {
+        "input_tokens": 293,
+        "output_tokens": 488,
+        "cache_read_input_tokens": 0
+      },
+      "duration_ms": 6626,
+      "total_cost_usd": 0.006431999999999999,
+      "session_id": "212e5189-24e6-499c-87be-8ec94f96c942",
+      "prompt_sha256": "0ea7caedf13f0cd452cc8eb1a574cc54f5e2b9656259edcbe2ea84f0fa6f35aa",
+      "output_sha256": "8d50e7f4d91f6cb771a78202c6cce008ded1fc770977f420f0bc46e33b3733b2"
+    },
+    {
+      "version": 2,
+      "technique_added": "Context and motivation",
+      "prompt_file": "v2_prompt.txt",
+      "output_file": "v2_output.md",
+      "prompt_word_count_whitespace": 234,
+      "output_word_count_whitespace": 817,
+      "model_ids_billed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5"
+      ],
+      "usage": {
+        "input_tokens": 848,
+        "output_tokens": 2589,
+        "cache_read_input_tokens": 0
+      },
+      "duration_ms": 26015,
+      "total_cost_usd": 0.028967000000000003,
+      "session_id": "f8d7424a-0a79-4e72-9892-08fc44b7aabc",
+      "prompt_sha256": "7d51d722fa97fc32abbae30ec76e1fadb70ed74f84b69aff37c016e4d4849085",
+      "output_sha256": "30e154fb04b7542ca6e9d9a7aeb475a9ab19fdae993d6e05acf33175edf082b5"
+    },
+    {
+      "version": 3,
+      "technique_added": "Few-shot examples",
+      "prompt_file": "v3_prompt.txt",
+      "output_file": "v3_output.md",
+      "prompt_word_count_whitespace": 345,
+      "output_word_count_whitespace": 739,
+      "model_ids_billed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5"
+      ],
+      "usage": {
+        "input_tokens": 2,
+        "output_tokens": 2454,
+        "cache_read_input_tokens": 0
+      },
+      "duration_ms": 24726,
+      "total_cost_usd": 0.030419,
+      "session_id": "ea17fd74-f1d3-499e-97d8-6932c617f9b8",
+      "prompt_sha256": "da937c968b4fb46810334f2480dcdf1f1ed75b927c7be044612e3a39e676ac91",
+      "output_sha256": "cbd6719a58a791a8b6773fff33662400918b03fe8eb66959c34c94610e700537"
+    },
+    {
+      "version": 4,
+      "technique_added": "Output structure",
+      "prompt_file": "v4_prompt.txt",
+      "output_file": "v4_output.md",
+      "prompt_word_count_whitespace": 388,
+      "output_word_count_whitespace": 334,
+      "model_ids_billed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5"
+      ],
+      "usage": {
+        "input_tokens": 2,
+        "output_tokens": 878,
+        "cache_read_input_tokens": 0
+      },
+      "duration_ms": 9764,
+      "total_cost_usd": 0.015096,
+      "session_id": "0ef4fa99-fada-420a-bd02-1d186c3e5d92",
+      "prompt_sha256": "94081f788ec082889d7f943d75589eac311cdf79aaae44d26b98f518f798ff31",
+      "output_sha256": "712eac5905a8f6fc14d906c82002942c2d6e18aff856c82e471cac2f607cedf9"
+    },
+    {
+      "version": 5,
+      "technique_added": "Step decomposition",
+      "prompt_file": "v5_prompt.txt",
+      "output_file": "v5_output.md",
+      "prompt_word_count_whitespace": 462,
+      "output_word_count_whitespace": 351,
+      "model_ids_billed": [
+        "claude-haiku-4-5-20251001",
+        "claude-sonnet-5"
+      ],
+      "usage": {
+        "input_tokens": 2,
+        "output_tokens": 1039,
+        "cache_read_input_tokens": 0
+      },
+      "duration_ms": 10406,
+      "total_cost_usd": 0.017511,
+      "session_id": "dc138e92-b640-4fb1-81a8-5508d739b546",
+      "prompt_sha256": "0af69f95d732fccdf1f02df91add169c34d1f02563a9763c43720b7ad4119dc0",
+      "output_sha256": "16df330cb80c4125829c102f6758b0fd0fdc6d6aeaebc2836abcb4df6d3c3e47"
+    }
+  ],
+  "totals": {
+    "runs": 6,
+    "total_cost_usd": 0.1035,
+    "total_output_tokens": 7804
+  }
+}

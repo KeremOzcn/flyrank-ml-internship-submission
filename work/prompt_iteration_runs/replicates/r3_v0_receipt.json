@@ -1,0 +1,43 @@
+{
+  "replicate": 3,
+  "version": 0,
+  "session_id": "01d84bb4-c1c8-46d6-bf92-712a756c1b1d",
+  "usage": {
+    "input_tokens": 278,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 364,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 278,
+        "output_tokens": 364,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "duration_ms": 5388,
+  "total_cost_usd": 0.005151,
+  "is_error": false,
+  "output_sha256": "9c389d02fa884986c20e185c5aace857413bb641ea04a9179d0e57c396cbc3bc",
+  "output_word_count_whitespace": 170
+}

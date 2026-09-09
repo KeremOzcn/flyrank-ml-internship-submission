@@ -1,0 +1,38 @@
+[
+  {
+    "exercise": "1_1",
+    "original_checker_pass": true,
+    "word_count": 3,
+    "qualitative_review": "Meets exercise criterion"
+  },
+  {
+    "exercise": "1_2",
+    "original_checker_pass": false,
+    "word_count": 76,
+    "qualitative_review": "Meets intended behavior; exact keyword checker fails"
+  },
+  {
+    "exercise": "2_1",
+    "original_checker_pass": true,
+    "word_count": 17,
+    "qualitative_review": "Meets exercise criterion"
+  },
+  {
+    "exercise": "2_2",
+    "original_checker_pass": true,
+    "word_count": 2,
+    "qualitative_review": "Meets exercise criterion"
+  },
+  {
+    "exercise": "2_3",
+    "original_checker_pass": true,
+    "word_count": 992,
+    "qualitative_review": "Meets exercise criterion"
+  },
+  {
+    "exercise": "3_1",
+    "original_checker_pass": false,
+    "word_count": 192,
+    "qualitative_review": "Correct x=6; original checker misses capitalized Incorrect"
+  }
+]

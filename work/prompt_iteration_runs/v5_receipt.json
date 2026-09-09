@@ -1,0 +1,71 @@
+{
+  "version": 5,
+  "session_id": "dc138e92-b640-4fb1-81a8-5508d739b546",
+  "model_usage": {
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 1648,
+      "outputTokens": 17,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.001733,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000,
+      "canonicalModel": "claude-haiku-4-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    },
+    "claude-sonnet-5": {
+      "inputTokens": 2,
+      "outputTokens": 1039,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 1346,
+      "webSearchRequests": 0,
+      "costUSD": 0.015778,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 64000,
+      "canonicalModel": "claude-sonnet-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 1346,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 1039,
+    "output_tokens_details": {
+      "thinking_tokens": 190
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 1346,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1039,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 1346,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1346
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "duration_ms": 10406,
+  "total_cost_usd": 0.017511,
+  "is_error": false,
+  "prompt_sha256": "0af69f95d732fccdf1f02df91add169c34d1f02563a9763c43720b7ad4119dc0",
+  "output_sha256": "16df330cb80c4125829c102f6758b0fd0fdc6d6aeaebc2836abcb4df6d3c3e47",
+  "output_word_count_whitespace": 351
+}

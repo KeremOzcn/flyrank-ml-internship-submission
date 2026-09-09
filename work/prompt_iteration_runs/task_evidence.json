@@ -1,0 +1,16 @@
+{
+  "source_notebook": "work/notebooks/w02_ml_task_framing.ipynb",
+  "source_sha256": "ac520a87619a9aa2c4b0ad73c3a98fd161672897744d6dd699117a2a7eeb8c04",
+  "source_kind": "saved executed notebook outputs; not a new benchmark run",
+  "raw_pages": 30000,
+  "clients": 32,
+  "eligible_pages": 21758,
+  "proxy_positive_pages": 13152,
+  "review_capacity_assumed": 50,
+  "rule_hits_at_50": 22,
+  "rule_precision_at_50": 0.44,
+  "random_expected_precision_at_50": 0.6044673223641879,
+  "model_trained": false,
+  "held_out_evaluation": false,
+  "refresh_benefit_observed": false
+}
