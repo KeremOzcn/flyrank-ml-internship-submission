@@ -14,6 +14,8 @@
       --paper: #F6F7F5;
       --main: #2A5D63;
       --accent: #B4552F;
+      --hairline: #D8DAD6;
+      --muted: #6B7280;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -21,66 +23,327 @@
         --paper: #111417;
         --main: #63B3AD;
         --accent: #E08A5F;
+        --hairline: #2A2D31;
+        --muted: #9CA3AF;
       }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'IBM Plex Sans', system-ui, sans-serif;
       background: var(--paper);
       color: var(--ink);
+      line-height: 1.65;
+      font-size: 17px;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+    a { color: var(--main); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    nav {
+      border-bottom: 1px solid var(--hairline);
+      padding: 1rem 2rem;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-      text-align: center;
+      position: sticky;
+      top: 0;
+      background: var(--paper);
+      z-index: 100;
     }
-    .container {
-      max-width: 640px;
+    nav .logo { font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; }
+    nav ul { display: flex; gap: 2rem; list-style: none; }
+    nav a { font-size: 0.95rem; }
+    @media (max-width: 600px) {
+      nav { flex-direction: column; gap: 0.75rem; padding: 1rem; }
+      nav ul { gap: 1.25rem; }
     }
-    h1 {
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-weight: 600;
-      font-size: 2.5rem;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.5rem;
-    }
-    .claim {
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-weight: 400;
-      font-size: 1.25rem;
-      line-height: 1.6;
-      color: var(--ink);
-      opacity: 0.85;
-      margin-bottom: 2rem;
-    }
-    .rule {
-      width: 48px;
-      height: 2px;
-      background: var(--main);
-      border: none;
-      margin: 0 auto 2rem;
-    }
-    .status {
+
+    /* Layout */
+    main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    section { margin-bottom: 4rem; }
+    h1 { font-weight: 600; font-size: 2.25rem; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.2; }
+    h2 { font-weight: 600; font-size: 1.5rem; letter-spacing: -0.02em; margin-bottom: 1.25rem; padding-top: 0.5rem; border-top: 1px solid var(--hairline); padding-top: 2rem; }
+    h3 { font-weight: 600; font-size: 1.15rem; margin-bottom: 0.75rem; margin-top: 2rem; }
+    p { margin-bottom: 1.25rem; }
+    .lead { font-size: 1.2rem; line-height: 1.6; margin-bottom: 2rem; opacity: 0.9; }
+    .claim { font-size: 1.35rem; font-weight: 600; line-height: 1.4; margin-bottom: 2rem; }
+
+    /* Chart / metric blocks */
+    .metric-row { display: flex; gap: 2rem; flex-wrap: wrap; margin: 1.5rem 0; }
+    .metric { text-align: left; }
+    .metric .num { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 2rem; color: var(--main); display: block; }
+    .metric .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+    .metric.accent .num { color: var(--accent); }
+
+    /* CTA */
+    .cta {
+      display: inline-block;
       font-family: 'IBM Plex Mono', monospace;
       font-weight: 500;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      border: 1.5px solid var(--main);
       color: var(--main);
-      letter-spacing: 0.05em;
+      border-radius: 4px;
+      margin: 1rem 0 2rem;
+      transition: background 0.2s, color 0.2s;
     }
-    @media (max-width: 480px) {
-      h1 { font-size: 1.75rem; }
-      .claim { font-size: 1.05rem; }
+    .cta:hover { background: var(--main); color: var(--paper); text-decoration: none; }
+
+    /* Case study */
+    .case-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .case-meta span { margin-right: 1.5rem; }
+    ul { padding-left: 1.25rem; margin-bottom: 1.25rem; }
+    li { margin-bottom: 0.5rem; }
+    strong { font-weight: 600; }
+
+    /* Code */
+    code, pre { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.9rem; }
+    pre {
+      background: var(--hairline);
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      opacity: 0.95;
     }
+    @media (prefers-color-scheme: dark) { pre { background: rgba(255,255,255,0.05); } }
+
+    /* Form */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--hairline);
+      border-radius: 4px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--main); outline: none; }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .btn-submit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.75rem;
+      background: var(--main);
+      color: var(--paper);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.85; }
+    .form-status { margin-top: 1rem; font-size: 0.95rem; }
+    .form-status.success { color: var(--main); }
+    .form-status.error { color: var(--accent); }
+
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; color: var(--muted); }
+    footer a { margin: 0 0.5rem; }
+
+    /* Hide sections for SPA-like nav */
+    .page { display: none; }
+    .page.active { display: block; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Kerem Özcan</h1>
-    <hr class="rule">
-    <p class="claim">I measure the baseline everyone assumes works — and report it when it loses to chance.</p>
-    <p class="status">Portfolio under construction</p>
-  </div>
+  <nav>
+    <div class="logo">Kerem Özcan</div>
+    <ul>
+      <li><a href="#home" onclick="showPage('home')">Home</a></li>
+      <li><a href="#work" onclick="showPage('work')">Work</a></li>
+      <li><a href="#method" onclick="showPage('method')">How I Work</a></li>
+      <li><a href="#contact" onclick="showPage('contact')">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- HOME -->
+    <div id="home" class="page active">
+      <section>
+        <p class="claim">I measure the baseline everyone assumes works — and report it when it loses to chance.</p>
+        <hr style="border:none; border-top: 1px solid var(--hairline); margin: 2rem 0;">
+
+        <h2>The measured result</h2>
+        <div class="metric-row">
+          <div class="metric accent">
+            <span class="num">44.0%</span>
+            <span class="label">Stale-first rule · Precision@50</span>
+          </div>
+          <div class="metric">
+            <span class="num">60.4%</span>
+            <span class="label">Random selection expectation</span>
+          </div>
+        </div>
+        <p>On a 21,758-page eligible slice of FlyRank's anonymized search data, the stale-first rule — "review the oldest popular pages first" — found declining pages in only 22 of its first 50 recommendations. Random selection from the same slice would have found 30. The rule lost to chance by 16.4 percentage points.</p>
+        <p>On the full 30,000-row pipeline with client-holdout validation, a random forest reached <span class="mono">Precision@50 = 0.740</span> — a 3.1× lift over the stale-first baseline (<span class="mono">0.240</span>) and 19.8pp above the 54.2% base rate.</p>
+
+        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">Inspect the notebook →</a>
+      </section>
+    </div>
+
+    <!-- WORK -->
+    <div id="work" class="page">
+      <section>
+        <h1>FlyRank: checking a content refresh rule before building a model</h1>
+        <p class="case-meta">
+          <span><strong>Status:</strong> Task framing and baseline complete</span>
+          <span><strong>Dataset:</strong> 30,000 anonymized pages · 32 clients</span>
+        </p>
+
+        <h2>The problem</h2>
+        <p>A content team has more pages than it can review at once. Page age alone is an easy way to build a queue, but being old does not necessarily mean a page needs attention. The decision I framed was: which pages should an editor inspect first for a possible refresh?</p>
+
+        <h2>What I did</h2>
+        <p>I used FlyRank's starter dataset: 30,000 anonymized content pages across 32 clients. It contains search activity and freshness signals, but no record showing that a refresh helped. That limits what I can call a result.</p>
+        <p>I kept pages with at least 100 impressions over 90 days and a nonzero previous 30-day impression count — leaving 21,758 pages with enough visibility for a provisional screen. I used observed impression decline as a proxy for review relevance: the dataset labels a page "down" when impressions fell by more than 20% between two 30-day windows.</p>
+        <p>I separated the label from the working signals, documented that the remaining 90-day metrics overlap the decline window, and built a stale-first baseline before training any model.</p>
+
+        <h2>What came of it</h2>
+        <div class="metric-row">
+          <div class="metric accent">
+            <span class="num">0.240</span>
+            <span class="label">Baseline Precision@50</span>
+          </div>
+          <div class="metric">
+            <span class="num">0.740</span>
+            <span class="label">Random Forest Precision@50</span>
+          </div>
+          <div class="metric">
+            <span class="num">0.542</span>
+            <span class="label">Base rate (positive class)</span>
+          </div>
+        </div>
+        <p>The stale-first rule reached <span class="mono">Precision@50 = 44.0%</span> on my filtered slice — below the <span class="mono">60.4%</span> random expectation. On the full pipeline with client-holdout validation, the random forest reached <span class="mono">Precision@50 = 0.740</span>, a 3.1× lift over the baseline.</p>
+        <p>The deliverable is a reproducible framing notebook, a baseline to challenge, and a ranked review queue with reason codes. An editor still inspects each page before choosing whether to update facts, expand coverage, revise metadata, or leave it alone.</p>
+
+        <h2>Limits</h2>
+        <ul>
+          <li>The trend window overlaps with the 90-day activity metrics — this is decision-support, not prospective prediction.</li>
+          <li>The proxy measures observed decline, not refresh need. A page may be declining for reasons a refresh cannot fix.</li>
+          <li>No held-out evaluation on a separately collected dataset has been performed.</li>
+        </ul>
+
+        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">Open the executed notebook →</a>
+      </section>
+    </div>
+
+    <!-- HOW I WORK -->
+    <div id="method" class="page">
+      <section>
+        <h1>How I work</h1>
+
+        <h2>Baseline before model</h2>
+        <p>I build a transparent rule first — one a content team would naturally build without ML — and measure it on the same data and metric as the model. If the baseline is below base rate, the model has a clear job. If the baseline is already good, the model needs to justify its complexity.</p>
+
+        <h2>Leak-hunting</h2>
+        <p>I check every feature against the label definition. In this project, <span class="mono">trend_direction</span> and <span class="mono">trend_pct</span> define the label — including them as features would be direct leakage. I also split by client (not randomly) so the model can't memorize client-specific patterns.</p>
+
+        <h2>Receipts beside claims</h2>
+        <p>Every number in my report traces to a committed JSON file (<span class="mono">outputs/model_results.json</span>). Re-running <span class="mono">python scripts/run_all.py</span> from a fresh clone reproduces every metric. No headline is taken on faith.</p>
+
+        <h2>Where AI helped</h2>
+        <p>I used AI to draft boilerplate pandas code, generate docstrings, and pressure-test my framing. The analytical decisions, the interpretation, and the honest reporting of a baseline that lost to chance — those are mine. The prompt iteration log shows the actual back-and-forth.</p>
+
+        <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/fl04_prompt_iteration_log.md" target="_blank">Read the prompt iteration log →</a>
+      </section>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="page">
+      <section>
+        <h1>Contact</h1>
+        <p class="lead">If you're evaluating how I approach an applied ML problem, start with the notebook. It shows the task choice, the dataframe, the rule comparison, and the limits of the result.</p>
+
+        <p>
+          <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission" target="_blank">GitHub repo →</a><br>
+          <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/capstone_report.md" target="_blank">Capstone report →</a>
+        </p>
+
+        <h2>Send me a message</h2>
+        <form id="contact-form" action="https://formspree.io/f/xzzpbqkn" method="POST">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required placeholder="What would you like to discuss?"></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send message</button>
+          <p class="form-status" id="form-status" style="display:none;"></p>
+        </form>
+
+        <h2>How the form works</h2>
+        <p style="font-size: 0.9rem; color: var(--muted);">
+          This form is handled by <a href="https://formspree.io" target="_blank">Formspree</a>, a free form-processing service — no server required. When you submit, your message goes from this page to Formspree's endpoint, which emails it to my inbox. No data is stored on this site; Formspree holds the submission temporarily and forwards it. The page never touches a backend of its own.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission" target="_blank">GitHub</a> ·
+    Built on the <a href="https://flyrank.ai" target="_blank">FlyRank</a> ML Internship dataset ·
+    <span class="mono">IBM Plex Sans / Mono</span>
+  </footer>
+
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // Handle initial hash
+    if (location.hash) {
+      showPage(location.hash.slice(1));
+    }
+
+    // Form handling
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          status.textContent = 'Thanks — your message reached me. I will be in touch.';
+          status.className = 'form-status success';
+          status.style.display = 'block';
+          form.reset();
+        } else {
+          const json = await res.json();
+          if (json && json.errors) {
+            status.textContent = json.errors.map(e => e.message).join(', ');
+          } else {
+            status.textContent = 'Something went wrong. Please try emailing me directly.';
+          }
+          status.className = 'form-status error';
+          status.style.display = 'block';
+        }
+      } catch(err) {
+        status.textContent = 'Network error. Please check your connection and try again.';
+        status.className = 'form-status error';
+        status.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
