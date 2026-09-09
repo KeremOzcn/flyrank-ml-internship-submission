@@ -58,7 +58,7 @@
 
 ## 4. Empty but live
 
-**Live URL:** (see deliverable links below)
+**Live URL:** https://keremozcn.github.io/flyrank-ml-internship-submission/
 
 The page is a near-blank HTML file with:
 - My name in IBM Plex Sans 600, ink on paper
