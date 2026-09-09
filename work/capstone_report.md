@@ -4,6 +4,7 @@
 - **Lane:** Content Refresh Priority Ranking (ranking lane)
 - **Repo:** [KeremOzcn/flyrank-ml-internship-submission](https://github.com/KeremOzcn/flyrank-ml-internship-submission)
 - **Date:** September 9, 2026
+- **Pipeline run:** September 9, 2026 — fresh `python scripts/run_all.py` on this machine. All metrics in this report come from that run's `outputs/model_results.json`, verifiable by re-running the same command from a fresh clone.
 
 > Built on the [FlyRank ML Internship](https://flyrank.ai) dataset. All data is anonymized — no client names, URLs, titles, or keywords appear in this report or in any committed file.
 

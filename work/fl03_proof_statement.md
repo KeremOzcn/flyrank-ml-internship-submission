@@ -9,8 +9,8 @@
 
 ## 1. The One-Paragraph Proof Statement
 
-> **Proof Statement**:  
-> *"For a **Lead Data Scientist or Applied ML Manager** seeking an engineer who can turn messy search data into production-ready priority queues, I demonstrate how to **build transparent, ML-driven content opportunity ranking systems that beat fixed human rules by ~3x Precision@50 on real search data without data leakage**. If you want an engineer who designs leak-free data contracts, builds honest baseline rules before fitting models, and delivers reproducible ML pipelines, **inspect my open-source GitHub repository and schedule a technical interview**."*
+> **Proof Statement:**  
+> *"I measure the baseline everyone assumes works — and report it when it loses to chance. Then I build a model that beats both. On FlyRank's anonymized search data, a random forest reached Precision@50 = 0.740 — a 3.1× lift over the stale-first baseline (0.240) and 19.8pp above the 54.2% base rate — verified by a fresh pipeline run on my machine."*
 
 ---
 
@@ -18,7 +18,7 @@
 
 | Element | Specific Selection | Why It Is Narrow & True |
 |---|---|---|
-| **1. The One Claim (Primary Skill)** | Building transparent ML content ranking systems that achieve a ~3x Precision@50 lift over human rules without data leakage. | Focuses on a single, measurable engineering capability backed by empirical benchmark receipts (Baseline 0.240 vs. Random Forest 0.740). Avoids multi-skill bundling ("and"). |
+| **1. The One Claim (Primary Skill)** | Measuring the baseline before building the model — and reporting when it loses to chance. Then showing the model (RF Precision@50 = 0.740) beats both the baseline (0.240) and base rate (0.542). | Focuses on a single, measurable engineering capability backed by a fresh pipeline run. The 3.1× lift is verified, not inherited from the starter repo's reference output. |
 | **2. The One Person (Target Audience)** | Lead Data Scientist / Applied ML Manager at a search, SEO, or content technology company. | Target decision-maker who evaluates technical rigor, pipeline hygiene, and model validation quality. Not generic "employers" or "everyone". |
 | **3. The One Action (Primary CTA)** | Inspect my open-source GitHub pipeline repository and schedule a technical interview. | Single, unambiguous call to action that converts technical interest into an active recruitment conversation. |
 

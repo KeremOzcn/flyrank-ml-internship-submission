@@ -10,7 +10,9 @@
 ## 1. Core Proof Statement & Single Action
 
 ### Primary Proof Statement
-> *"I build transparent, ML-driven search performance ranking systems that beat fixed human rules by ~3x Precision@50 on real search data, without data leakage or black-box opacity."*
+> *"I measure the baseline everyone assumes works — and report it when it loses to chance. Then I build a model that beats both."*
+>
+> **Correction note (Sept 9, 2026):** The original claim cited "~3× Precision@50" using the starter repo's reference numbers (0.240 → 0.740). I have since run the pipeline myself (`python scripts/run_all.py`) and confirmed the same numbers on my machine: baseline Precision@50 = 0.240, random forest Precision@50 = 0.740, a 3.1× lift over the stale-first rule and 19.8pp above the 54.2% base rate. The claim now leads with the measured baseline failure (44.0% vs 60.4% random expectation on a filtered slice), which is the finding that justifies the model.
 
 ### Target Audience & Primary CTA (One Action)
 - **Target Audience**: Lead Data Scientists, ML Engineering Managers, and Technical SEO Directors.
@@ -23,7 +25,7 @@
 The sitemap is deliberately minimal—only 4 pages are included, each strictly earning its place by guiding the visitor toward the single primary action.
 
 ```text
-[ HOME / HERO ] ───────────► Core Claim + Baseline vs ML Metric (~3x Lift)
+[ HOME / HERO ] ───────────► Core Claim + Measured Baseline vs Model (0.240 → 0.740)
       │
       ├──► [ WORK / CASE STUDY ] ──► Full FlyRank Refresh Model Research Paper & Pipeline
       │
@@ -36,7 +38,7 @@ The sitemap is deliberately minimal—only 4 pages are included, each strictly e
 
 | Page | Primary Purpose | How It Earns Its Place Against the Claim & Action |
 |---|---|---|
-| **1. Home / Hero** | Landing & Proof Header | Directly states the proof claim above the fold. Highlights the key empirical result (Baseline Precision@50: 0.240 vs Random Forest: 0.740) with a prominent primary CTA button (*"Inspect Research Paper"*). |
+| **1. Home / Hero** | Landing & Proof Header | Directly states the proof claim above the fold. Highlights the measured baseline failure (stale-first rule below random expectation) and the model result (Precision@50: 0.240 → 0.740, verified by a fresh pipeline run). Primary CTA: *"Inspect the notebook"*. |
 | **2. Work / Case Study** | Deep Technical Proof | Houses the full Applied Search Intelligence research paper: problem framing, DuckDB warehouse query methodology, client-holdout validation, and reason-code exports. Proves technical depth. |
 | **3. About & Methodology** | Trust & Mindset | Outlines my engineering principles: human-in-the-loop validation, strict data contracts, and Ethan Mollick's AI framing. Establishes how I work as an ML intern/engineer. |
 | **4. Contact & Verification** | Frictionless Action | Provides direct links to the public GitHub repository (`KeremOzcn/flyrank-ml-internship-submission`), live deployed paper, and contact options for technical recruitment. |

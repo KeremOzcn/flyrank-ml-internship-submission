@@ -182,7 +182,7 @@
           </div>
         </div>
         <p>On a 21,758-page eligible slice of FlyRank's anonymized search data, the stale-first rule — "review the oldest popular pages first" — found declining pages in only 22 of its first 50 recommendations. Random selection from the same slice would have found 30. The rule lost to chance by 16.4 percentage points.</p>
-        <p>On the full 30,000-row pipeline with client-holdout validation, a random forest reached <span class="mono">Precision@50 = 0.740</span> — a 3.1× lift over the stale-first baseline (<span class="mono">0.240</span>) and 19.8pp above the 54.2% base rate.</p>
+        <p>On the full 30,000-row pipeline with client-holdout validation (run by me on September 9, 2026), a random forest reached <span class="mono">Precision@50 = 0.740</span> — a 3.1× lift over the stale-first baseline (<span class="mono">0.240</span>) and 19.8pp above the 54.2% base rate. <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/outputs/model_results.json" target="_blank">View the raw metrics →</a></p>
 
         <a class="cta" href="https://github.com/KeremOzcn/flyrank-ml-internship-submission/blob/main/work/notebooks/w02_ml_task_framing.ipynb" target="_blank">Inspect the notebook →</a>
       </section>
@@ -220,7 +220,7 @@
             <span class="label">Base rate (positive class)</span>
           </div>
         </div>
-        <p>The stale-first rule reached <span class="mono">Precision@50 = 44.0%</span> on my filtered slice — below the <span class="mono">60.4%</span> random expectation. On the full pipeline with client-holdout validation, the random forest reached <span class="mono">Precision@50 = 0.740</span>, a 3.1× lift over the baseline.</p>
+        <p>The stale-first rule reached <span class="mono">Precision@50 = 44.0%</span> on my filtered slice — below the <span class="mono">60.4%</span> random expectation. On the full pipeline with client-holdout validation (run by me, Sept 9 2026), the random forest reached <span class="mono">Precision@50 = 0.740</span>, a 3.1× lift over the baseline.</p>
         <p>The deliverable is a reproducible framing notebook, a baseline to challenge, and a ranked review queue with reason codes. An editor still inspects each page before choosing whether to update facts, expand coverage, revise metadata, or leave it alone.</p>
 
         <h2>Limits</h2>
