@@ -334,9 +334,24 @@ tr.baseline td:first-child { font-style:italic; }
   <div class="scroll-hint">Scroll ↓</div>
 </header>
 
-<!-- TOC -->
+<!-- ABSTRACT -->
 <section style="padding:3rem 1.5rem 1rem;">
   <div class="section-inner">
+    <div class="abstract-block">
+      <p>
+        <strong>Abstract.</strong> Content pages lose search visibility over time, but prioritizing
+        which pages to refresh is a manual, reactive process. We frame this as a binary classification
+        task — predicting whether a page's impressions are declining — and build a ranked action engine
+        on top of the model. Using 30,000 pages across 32 pseudonymized clients with 52 engineered
+        features (momentum, traffic, content, and engagement signals), we train five models under
+        client-holdout validation and GroupKFold cross-validation. The best model (LightGBM) achieves
+        ROC AUC 0.995 and Average Precision 0.997 on held-out clients, substantially outperforming the
+        stale-first heuristic baseline (ROC AUC 0.537). The action engine assigns each page a priority
+        score (0–100), a suggested action (refresh, review CTR, expand, protect, monitor), and
+        human-readable reason codes — producing a decision-support queue rather than a black-box
+        prediction.
+      </p>
+    </div>
     <div class="toc">
       <div class="toc-title">Contents</div>
       <ol>
