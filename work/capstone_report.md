@@ -1,10 +1,10 @@
-# Capstone Report — Content Refresh Priority Ranking
+# Capstone Report — Content Refresh Opportunity Scoring
 
 - **Author:** Kerem Özcan
-- **Lane:** Content Refresh Priority Ranking (ranking lane)
+- **Lane:** Refresh / Content Opportunity Scoring
 - **Repo:** [KeremOzcn/flyrank-ml-internship-submission](https://github.com/KeremOzcn/flyrank-ml-internship-submission)
-- **Date:** September 9, 2026
-- **Pipeline run:** September 9, 2026 — fresh `python scripts/run_all.py` on this machine. All metrics in this report come from that run's `outputs/model_results.json`, verifiable by re-running the same command from a fresh clone.
+- **Date:** September 16, 2026
+- **Pipeline run:** `python scripts/capstone_run_model.py && python scripts/capstone_run_action_engine.py` — seed 42, all metrics from `outputs/capstone_model_results.json`.
 
 > Built on the [FlyRank ML Internship](https://flyrank.ai) dataset. All data is anonymized — no client names, URLs, titles, or keywords appear in this report or in any committed file.
 
@@ -12,7 +12,7 @@
 
 ## 0. Abstract
 
-Which pages should an editor review first for a possible content refresh? I framed this as a ranking problem on 30,000 anonymized content pages from 32 pseudonymized clients, using observed impression decline as a proxy for review relevance. A transparent stale-first baseline reached Precision@50 = 24.0% on the starter pipeline's client-holdout split — below the 54.2% positive-class base rate, meaning the rule is worse than random at finding declining pages. A random forest trained on 52 leak-free features reached Precision@50 = 74.0% on the same split, a 3.1× lift over the baseline and 19.8 percentage points above base rate. The output is a ranked review queue with reason codes, not a publishing decision — an editor still inspects each page before acting. The pipeline is reproducible from a fresh clone with `python scripts/run_all.py`.
+Which content pages should a team refresh first? We frame this as a binary classification task — predicting whether a page's impressions are declining — and build a ranked action engine on top of the model. Using 30,000 pages across 32 pseudonymized clients with 52 engineered features (momentum, traffic, content, engagement signals), we train five models under client-holdout validation and 5-fold GroupKFold cross-validation. The best model (LightGBM) achieves ROC AUC 0.995 and Average Precision 0.997 on held-out clients, a +85.2% relative improvement over the stale-first heuristic baseline (ROC AUC 0.537). The action engine assigns each page a priority score (0–100), a suggested action (refresh, review CTR, expand, protect, monitor), and human-readable reason codes — producing a decision-support queue rather than a black-box prediction.
 
 ---
 

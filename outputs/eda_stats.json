@@ -1,0 +1,37 @@
+{
+  "n_rows": 30000,
+  "n_cols": 44,
+  "n_clients": 32,
+  "n_content_items": 30000,
+  "declining_rate": 0.5420666666666667,
+  "trend_direction_counts": {
+    "down": 16262,
+    "stable": 5962,
+    "up": 4388,
+    "new": 2236,
+    "flat": 1152
+  },
+  "content_type_counts": {
+    "keyword article": 27207,
+    "feedly article": 2096,
+    "comparison article": 697
+  },
+  "client_declining_rate_range": {
+    "min": 0.0,
+    "max": 0.9367209971236817
+  },
+  "median_impressions_90d": 731.0,
+  "median_ctr": 0.07,
+  "median_position": 11.4,
+  "median_content_age_days": 236.0,
+  "top_missing_cols": {
+    "provider_used": 71.46000000000001,
+    "char_count": 25.663333333333334,
+    "word_count": 25.663333333333334,
+    "word_count_tier": 25.663333333333334,
+    "char_count_tier": 25.663333333333334,
+    "model_used": 19.11,
+    "trend_pct": 11.293333333333333,
+    "competition_level": 8.7
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "total_pages_scored": 4723,
+  "action_distribution": {
+    "refresh": 1419,
+    "refresh_and_review_ctr": 1194,
+    "monitor": 1136,
+    "protect": 557,
+    "refresh_and_review_engagement": 378,
+    "expand_and_refresh": 39
+  },
+  "confidence_distribution": {
+    "low": 1863,
+    "medium": 1460,
+    "high": 1400
+  },
+  "top_reason_codes": {
+    "model_decline_risk": 2832,
+    "low_ctr_visible_position": 1791,
+    "high_visibility_declining": 1733,
+    "stale_content": 1193,
+    "general_review": 1109,
+    "low_engagement_with_traffic": 567,
+    "growing_page_protect": 560,
+    "old_content_losing_position": 79,
+    "thin_content_visible": 39,
+    "stable_page_monitor": 27
+  },
+  "priority_score_stats": {
+    "mean": 46.49332719777623,
+    "median": 57.99198118007548,
+    "p80": 71.99947902082239,
+    "max": 89.99979613121329
+  },
+  "high_confidence_count": 1400,
+  "outputs": {
+    "full_queue": "/Users/keremozcan/Desktop/flyrank_intern/flyrank-ml-internship-starter/outputs/capstone_refresh_queue.csv",
+    "top50": "/Users/keremozcan/Desktop/flyrank_intern/flyrank-ml-internship-starter/outputs/capstone_refresh_queue_top50.csv",
+    "top100": "/Users/keremozcan/Desktop/flyrank_intern/flyrank-ml-internship-starter/outputs/capstone_refresh_queue_top100.csv"
+  }
+}

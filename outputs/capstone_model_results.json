@@ -1,0 +1,166 @@
+{
+  "best_model": "lightgbm",
+  "split": "client_holdout",
+  "n_train": 25277,
+  "n_test": 4723,
+  "n_test_clients": 6,
+  "models": {
+    "logistic_regression": {
+      "roc_auc": 0.919923268416339,
+      "average_precision": 0.9476257620381935,
+      "f1": 0.8805052919085012,
+      "precision": 0.8763166836561332,
+      "recall": 0.8847341337907375,
+      "brier_score": 0.11511699477871344,
+      "precision_at_20": 1.0,
+      "precision_at_50": 1.0,
+      "precision_at_100": 1.0,
+      "cv_roc_auc_mean": 0.9293304405449817,
+      "cv_roc_auc_std": 0.034988741252030116
+    },
+    "random_forest": {
+      "roc_auc": 0.985467106361663,
+      "average_precision": 0.9913537897748897,
+      "f1": 0.9416342412451362,
+      "precision": 0.9289052069425902,
+      "recall": 0.9547169811320755,
+      "brier_score": 0.061730764771751996,
+      "precision_at_20": 1.0,
+      "precision_at_50": 1.0,
+      "precision_at_100": 1.0,
+      "cv_roc_auc_mean": 0.9895660996839644,
+      "cv_roc_auc_std": 0.010273269243402553
+    },
+    "xgboost": {
+      "roc_auc": 0.9939280726786988,
+      "average_precision": 0.9966350999436651,
+      "f1": 0.9649778986739205,
+      "precision": 0.9565217391304348,
+      "recall": 0.9735849056603774,
+      "brier_score": 0.030898796394467354,
+      "precision_at_20": 1.0,
+      "precision_at_50": 1.0,
+      "precision_at_100": 1.0,
+      "cv_roc_auc_mean": 0.9929272311490674,
+      "cv_roc_auc_std": 0.00832286973288994
+    },
+    "lightgbm": {
+      "roc_auc": 0.9945576359689734,
+      "average_precision": 0.996985746019087,
+      "f1": 0.9745806674736296,
+      "precision": 0.9825662482566249,
+      "recall": 0.9667238421955403,
+      "brier_score": 0.024781075605857118,
+      "precision_at_20": 1.0,
+      "precision_at_50": 1.0,
+      "precision_at_100": 1.0,
+      "cv_roc_auc_mean": 0.9929417118021082,
+      "cv_roc_auc_std": 0.008327008569707106
+    },
+    "extra_trees": {
+      "roc_auc": 0.7848037690311025,
+      "average_precision": 0.8123385780018445,
+      "f1": 0.7746086956521739,
+      "precision": 0.7855379188712522,
+      "recall": 0.7639794168096055,
+      "brier_score": 0.1934727519581873,
+      "precision_at_20": 1.0,
+      "precision_at_50": 0.86,
+      "precision_at_100": 0.89,
+      "cv_roc_auc_mean": 0.8222066490242401,
+      "cv_roc_auc_std": 0.02499327559588832
+    }
+  },
+  "baselines": {
+    "majority_class": {
+      "roc_auc": 0.5,
+      "average_precision": 0.6171924624179547,
+      "precision_at_50": 0.6171924624179547,
+      "precision_at_100": 0.6171924624179547,
+      "f1": 0.0,
+      "recall": 0.0,
+      "brier_score": 0.24421597241177984
+    },
+    "random": {
+      "roc_auc": 0.49854202401372216,
+      "average_precision": 0.6177507767976484,
+      "precision_at_50": 0.6,
+      "precision_at_100": 0.63,
+      "f1": 0.5442410373760488,
+      "recall": 0.4895368782161235,
+      "brier_score": 0.3351839601787977
+    },
+    "stale_first_rule": {
+      "roc_auc": 0.5372135847538669,
+      "average_precision": 0.6830227699439471,
+      "precision_at_50": 0.24,
+      "precision_at_100": 0.34,
+      "f1": 0.5077621208502507,
+      "recall": 0.3646655231560892,
+      "brier_score": 0.37684058216120814
+    }
+  },
+  "feature_importance_top": [
+    {
+      "feature": "content_age_days",
+      "importance": 861.0
+    },
+    {
+      "feature": "position_x_impressions",
+      "importance": 832.0
+    },
+    {
+      "feature": "avg_position",
+      "importance": 793.0
+    },
+    {
+      "feature": "days_with_impressions",
+      "importance": 696.0
+    },
+    {
+      "feature": "impressions_per_day",
+      "importance": 572.0
+    },
+    {
+      "feature": "char_count",
+      "importance": 570.0
+    },
+    {
+      "feature": "word_count",
+      "importance": 534.0
+    },
+    {
+      "feature": "log_impressions_90d",
+      "importance": 531.0
+    },
+    {
+      "feature": "impression_momentum",
+      "importance": 339.0
+    },
+    {
+      "feature": "search_volume",
+      "importance": 293.0
+    },
+    {
+      "feature": "days_since_last_update",
+      "importance": 266.0
+    },
+    {
+      "feature": "cpc",
+      "importance": 265.0
+    },
+    {
+      "feature": "competition",
+      "importance": 261.0
+    },
+    {
+      "feature": "scroll_rate",
+      "importance": 212.0
+    },
+    {
+      "feature": "session_momentum",
+      "importance": 168.0
+    }
+  ],
+  "random_seed": 42
+}
