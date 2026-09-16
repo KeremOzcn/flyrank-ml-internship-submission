@@ -1,467 +1,712 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Refresh Opportunity Scoring — ML Capstone</title>
-  <meta name="description" content="Predicting which content pages need a refresh before traffic declines — a decision-support ranking engine built on 30K pages across 32 clients.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --ink: #16191C;
-      --paper: #FAFAF8;
-      --main: #2A5D63;
-      --accent: #B4552F;
-      --accent2: #6F4E7C;
-      --hairline: #E4E6E2;
-      --hairline-strong: #C8CCC6;
-      --muted: #6B7280;
-      --chart-bg: #ffffff;
-      --shadow-sm: 0 1px 2px rgba(22, 25, 28, 0.04);
-      --shadow-md: 0 2px 8px rgba(22, 25, 28, 0.06), 0 1px 2px rgba(22, 25, 28, 0.04);
-      --radius: 8px;
-      --ease: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --ink: #E8E9E7;
-        --paper: #0E1114;
-        --main: #63B3AD;
-        --accent: #E08A5F;
-        --accent2: #A78BC9;
-        --hairline: #232629;
-        --hairline-strong: #2E3237;
-        --muted: #8B95A1;
-        --chart-bg: #161A1E;
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
-      }
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'IBM Plex Sans', system-ui, sans-serif;
-      background: var(--paper);
-      color: var(--ink);
-      line-height: 1.7;
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    .container { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; }
-    h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; }
-    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-    h2 { font-size: 1.4rem; margin-top: 3rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--hairline); padding-bottom: 0.3rem; }
-    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; color: var(--main); }
-    p { margin-bottom: 0.8rem; }
-    .abstract {
-      background: var(--chart-bg);
-      border-left: 3px solid var(--main);
-      padding: 1.2rem 1.5rem;
-      margin: 1.5rem 0;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      box-shadow: var(--shadow-sm);
-      font-size: 0.95rem;
-    }
-    .meta {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 1.5rem;
-    }
-    .meta a { color: var(--main); text-decoration: none; }
-    .meta a:hover { text-decoration: underline; }
-    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
-    th, td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--hairline); }
-    th { font-weight: 600; color: var(--main); background: var(--chart-bg); }
-    tr:hover { background: var(--chart-bg); }
-    .chart { margin: 1.5rem 0; text-align: center; }
-    .chart img { max-width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-md); }
-    .chart figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
-    .stat-card { background: var(--chart-bg); padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow-sm); text-align: center; }
-    .stat-card .num { font-size: 1.6rem; font-weight: 700; color: var(--main); font-family: 'IBM Plex Mono', monospace; }
-    .stat-card .label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
-    .tag { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 20px; font-size: 0.78rem; font-weight: 500; margin: 0.1rem; }
-    .tag-action { background: rgba(42,93,99,0.12); color: var(--main); }
-    code { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; background: var(--chart-bg); padding: 0.1rem 0.3rem; border-radius: 4px; }
-    .warning { background: rgba(180,85,47,0.08); border-left: 3px solid var(--accent); padding: 0.8rem 1rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; font-size: 0.9rem; }
-    .ack { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--hairline); font-size: 0.85rem; color: var(--muted); }
-    .ack a { color: var(--main); }
-    .toc { background: var(--chart-bg); padding: 1rem 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin: 1.5rem 0; }
-    .toc ol { padding-left: 1.5rem; }
-    .toc li { margin: 0.25rem 0; }
-    .toc a { color: var(--main); text-decoration: none; }
-    .toc a:hover { text-decoration: underline; }
-    @media (max-width: 600px) { .container { padding: 1rem; } h1 { font-size: 1.5rem; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Refresh Opportunity Scoring — ML Capstone</title>
+<meta name="description" content="Predicting which content pages need a refresh before traffic declines — a decision-support ranking engine built on 30K pages across 32 clients.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0C0E12;
+  --bg-elev: #15181E;
+  --bg-card: #1A1D24;
+  --bg-hover: #21252E;
+  --text: #ECE9E1;
+  --text-dim: #8A8B86;
+  --text-mute: #5C5D58;
+  --teal: #5FB3A3;
+  --teal-dim: rgba(95,179,163,.15);
+  --amber: #E8945A;
+  --amber-dim: rgba(232,148,90,.15);
+  --violet: #9A8EC4;
+  --violet-dim: rgba(154,142,196,.15);
+  --red: #E55A4A;
+  --red-dim: rgba(229,90,74,.15);
+  --green: #7AB87A;
+  --green-dim: rgba(122,184,122,.15);
+  --border: rgba(255,255,255,.06);
+  --border-strong: rgba(255,255,255,.12);
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #F7F5F0;
+    --bg-elev: #FFFFFF;
+    --bg-card: #FCFAF6;
+    --bg-hover: #F0EDE5;
+    --text: #1A1B1E;
+    --text-dim: #6B6C68;
+    --text-mute: #9A9B97;
+    --border: rgba(0,0,0,.08);
+    --border-strong: rgba(0,0,0,.15);
+    --teal-dim: rgba(95,179,163,.08);
+    --amber-dim: rgba(232,148,90,.08);
+    --violet-dim: rgba(154,142,196,.08);
+    --red-dim: rgba(229,90,74,.08);
+    --green-dim: rgba(122,184,122,.08);
+  }
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+/* === NAV === */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:transform .3s ease;
+}
+nav.hidden { transform:translateY(-100%); }
+.nav-inner {
+  max-width:1100px; margin:0 auto; padding:0 1.5rem;
+  display:flex; align-items:center; justify-content:space-between;
+  height:52px;
+}
+.nav-brand { font-family:var(--serif); font-weight:600; font-size:16px; letter-spacing:-.02em; }
+.nav-brand span { color:var(--teal); }
+.nav-links { display:flex; gap:.15rem; }
+.nav-links a {
+  color:var(--text-dim); text-decoration:none; font-size:12px;
+  padding:.35rem .6rem; border-radius:var(--radius-sm);
+  transition:all .2s;
+}
+.nav-links a:hover { color:var(--text); background:var(--bg-hover); }
+.nav-links a.active { color:var(--teal); }
+
+/* === HERO === */
+.hero {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  position:relative; padding:6rem 1.5rem 4rem;
+  background:radial-gradient(ellipse at 30% 20%, var(--teal-dim) 0%, transparent 50%),
+             radial-gradient(ellipse at 70% 80%, var(--amber-dim) 0%, transparent 50%),
+             var(--bg);
+}
+.hero-inner { max-width:760px; text-align:center; position:relative; z-index:1; }
+.hero-tag {
+  display:inline-block; padding:.3rem .8rem; border-radius:20px;
+  font-size:11px; font-weight:500; letter-spacing:.05em; text-transform:uppercase;
+  background:var(--teal-dim); color:var(--teal); border:1px solid var(--teal-dim);
+  margin-bottom:1.5rem;
+}
+.hero h1 {
+  font-family:var(--serif); font-weight:300; font-size:clamp(2.5rem,6vw,4.5rem);
+  line-height:1.05; letter-spacing:-.03em; margin-bottom:1.2rem;
+}
+.hero h1 em { font-style:italic; font-weight:600; color:var(--teal); }
+.hero-sub {
+  font-family:var(--mono); font-size:1rem; color:var(--text-dim);
+  max-width:560px; margin:0 auto 2rem; line-height:1.7;
+}
+.hero-meta {
+  display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
+  font-size:12px; color:var(--text-mute); margin-bottom:2.5rem;
+}
+.hero-meta a { color:var(--teal); text-decoration:none; }
+.hero-meta a:hover { text-decoration:underline; }
+.hero-stats {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:var(--border); border-radius:var(--radius); overflow:hidden;
+  margin-top:2rem;
+}
+.hero-stat {
+  background:var(--bg-elev); padding:1.5rem 1rem; text-align:center;
+}
+.hero-stat .num { font-family:var(--serif); font-size:2rem; font-weight:600; color:var(--teal); }
+.hero-stat .lbl { font-size:11px; color:var(--text-mute); margin-top:.25rem; letter-spacing:.03em; }
+.scroll-hint {
+  position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+  font-size:11px; color:var(--text-mute); letter-spacing:.1em; text-transform:uppercase;
+  animation:bounce 2s infinite;
+}
+@keyframes bounce {
+  0%,100% { transform:translateX(-50%) translateY(0); }
+  50% { transform:translateX(-50%) translateY(8px); }
+}
+
+/* === SECTIONS === */
+section { padding:5rem 1.5rem; position:relative; }
+.section-inner { max-width:780px; margin:0 auto; }
+.section-num {
+  font-family:var(--mono); font-size:12px; font-weight:500;
+  color:var(--text-mute); letter-spacing:.1em; text-transform:uppercase;
+  margin-bottom:.5rem; display:block;
+}
+section h2 {
+  font-family:var(--serif); font-weight:400; font-size:2rem;
+  letter-spacing:-.02em; margin-bottom:1.5rem; line-height:1.2;
+}
+section h2 em { font-style:italic; color:var(--teal); }
+section h3 {
+  font-family:var(--mono); font-weight:600; font-size:13px;
+  color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em;
+  margin:2rem 0 .8rem;
+}
+section p { margin-bottom:1rem; color:var(--text); }
+section ul { list-style:none; padding-left:0; margin:1rem 0; }
+section li {
+  padding:.4rem 0 .4rem 1.5rem; position:relative; color:var(--text);
+}
+section li::before {
+  content:''; position:absolute; left:0; top:.85rem;
+  width:6px; height:6px; border-radius:50%; background:var(--teal);
+}
+section code {
+  font-family:var(--mono); font-size:.85em;
+  background:var(--bg-card); padding:.1em .35em; border-radius:4px;
+  border:1px solid var(--border); color:var(--amber);
+}
+
+/* === ABSTRACT === */
+.abstract-block {
+  background:var(--bg-elev); border-left:3px solid var(--teal);
+  padding:2rem 2rem; border-radius:0 var(--radius) var(--radius) 0;
+  margin:2rem 0; position:relative;
+}
+.abstract-block::before {
+  content:'Abstract'; position:absolute; top:-10px; left:1.5rem;
+  background:var(--teal); color:var(--bg); font-family:var(--mono);
+  font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:.2rem .6rem; border-radius:4px;
+}
+.abstract-block p { font-family:var(--serif); font-size:1.05rem; line-height:1.7; color:var(--text); }
+.abstract-block strong { color:var(--teal); }
+
+/* === STAT GRID === */
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin:1.5rem 0; }
+.stat-card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.2rem; text-align:center;
+  transition:all .3s;
+}
+.stat-card:hover { border-color:var(--border-strong); transform:translateY(-2px); }
+.stat-card .num { font-family:var(--serif); font-size:1.8rem; font-weight:600; }
+.stat-card .num.teal { color:var(--teal); }
+.stat-card .num.amber { color:var(--amber); }
+.stat-card .num.violet { color:var(--violet); }
+.stat-card .num.red { color:var(--red); }
+.stat-card .lbl { font-size:11px; color:var(--text-mute); margin-top:.3rem; }
+
+/* === TABLE === */
+table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:13px; }
+th {
+  text-align:left; padding:.7rem .8rem; font-family:var(--mono);
+  font-weight:500; font-size:11px; color:var(--text-mute);
+  text-transform:uppercase; letter-spacing:.05em;
+  border-bottom:1px solid var(--border-strong);
+}
+td { padding:.6rem .8rem; border-bottom:1px solid var(--border); }
+tr:hover td { background:var(--bg-card); }
+tr.best td { font-weight:600; }
+tr.best td:first-child { color:var(--teal); }
+tr.baseline td { color:var(--text-dim); }
+tr.baseline td:first-child { font-style:italic; }
+
+/* === CHART === */
+.chart { margin:2.5rem 0; }
+.chart-inner {
+  border:1px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; background:var(--bg-elev);
+  transition:border-color .3s;
+}
+.chart-inner:hover { border-color:var(--border-strong); }
+.chart-inner img { width:100%; display:block; }
+.chart figcaption {
+  font-size:12px; color:var(--text-mute); margin-top:.6rem; text-align:center;
+  font-style:italic;
+}
+
+/* === TAGS === */
+.tag { display:inline-block; padding:.2rem .5rem; border-radius:6px; font-size:11px; font-weight:500; margin:.1rem; }
+.tag-refresh { background:var(--red-dim); color:var(--red); }
+.tag-ctr { background:var(--amber-dim); color:var(--amber); }
+.tag-monitor { background:rgba(140,140,140,.1); color:var(--text-dim); }
+.tag-protect { background:var(--green-dim); color:var(--green); }
+.tag-engagement { background:var(--violet-dim); color:var(--violet); }
+.tag-expand { background:var(--teal-dim); color:var(--teal); }
+
+/* === WARNING === */
+.warning {
+  background:var(--amber-dim); border-left:3px solid var(--amber);
+  padding:1rem 1.2rem; border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  margin:1.5rem 0; font-size:13px;
+}
+.warning strong { color:var(--amber); }
+
+/* === TOC === */
+.toc {
+  background:var(--bg-elev); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.5rem 2rem; margin:2rem 0;
+}
+.toc-title { font-family:var(--serif); font-weight:600; font-size:14px; margin-bottom:.8rem; color:var(--text-dim); }
+.toc ol { list-style:none; padding:0; counter-reset:toc; }
+.toc li { counter-increment:toc; padding:.3rem 0; }
+.toc li::before { content:counter(toc,decimal-leading-zero); color:var(--text-mute); font-family:var(--mono); font-size:12px; margin-right:.8rem; }
+.toc a { color:var(--text-dim); text-decoration:none; font-size:14px; transition:color .2s; }
+.toc a:hover { color:var(--teal); }
+
+/* === ACK === */
+.ack {
+  text-align:center; padding:4rem 1.5rem; border-top:1px solid var(--border);
+}
+.ack p { font-family:var(--serif); font-size:1.1rem; color:var(--text-dim); }
+.ack a { color:var(--teal); text-decoration:none; }
+.ack a:hover { text-decoration:underline; }
+
+/* === ANIMATIONS === */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.fade-in { animation:fadeInUp .6s ease forwards; }
+
+/* === RESPONSIVE === */
+@media (max-width:640px) {
+  .hero h1 { font-size:2.2rem; }
+  .hero-stats { grid-template-columns:repeat(2,1fr); }
+  .nav-links { display:none; }
+  section { padding:3.5rem 1.2rem; }
+  section h2 { font-size:1.5rem; }
+  .abstract-block { padding:1.5rem 1.2rem; }
+}
+</style>
 </head>
 <body>
-  <div class="container">
 
-    <h1>Content Refresh Opportunity Scoring</h1>
-    <p class="meta">
-      <strong>Kerem Özcan</strong> · FlyRank ML Internship Capstone (ML-CAP-01)<br>
-      Lane: Refresh / Content Opportunity Scoring · September 2026<br>
-      <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission">GitHub repo</a> ·
-      <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse">Hugging Face dataset</a>
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Content<span>.</span>Refresh</div>
+    <div class="nav-links">
+      <a href="#intro" data-sec="intro">Intro</a>
+      <a href="#data" data-sec="data">Data</a>
+      <a href="#method" data-sec="method">Method</a>
+      <a href="#results" data-sec="results">Results</a>
+      <a href="#limitations" data-sec="limitations">Limits</a>
+      <a href="#actions" data-sec="actions">Actions</a>
+      <a href="#repro" data-sec="repro">Repro</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">FlyRank ML Capstone · ML-CAP-01</div>
+    <h1>Predicting which pages<br>need a <em>refresh</em><br>before traffic drops</h1>
+    <p class="hero-sub">
+      A decision-support ranking engine that scores 30,000 content pages across 32 clients,
+      assigns refresh priorities, and explains <em>why</em> — using 52 engineered features
+      and five models under client-aware validation.
     </p>
+    <div class="hero-meta">
+      <span>Kerem Özcan</span>
+      <span>·</span>
+      <a href="https://github.com/KeremOzcn/flyrank-ml-internship-submission">GitHub</a>
+      <span>·</span>
+      <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse">Hugging Face</a>
+      <span>·</span>
+      <span>September 2026</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">0.995</div><div class="lbl">ROC AUC</div></div>
+      <div class="hero-stat"><div class="num">0.997</div><div class="lbl">Avg Precision</div></div>
+      <div class="hero-stat"><div class="num">+85%</div><div class="lbl">vs Baseline</div></div>
+      <div class="hero-stat"><div class="num">4,723</div><div class="lbl">Pages Scored</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll ↓</div>
+</header>
 
-    <div class="abstract">
-      <strong>Abstract.</strong> Content pages lose search visibility over time, but prioritizing
-      which pages to refresh is a manual, reactive process. We frame this as a binary classification
-      task — predicting whether a page's impressions are declining — and build a ranked action engine
-      on top of the model. Using 30,000 pages across 32 pseudonymized clients with 52 engineered features
-      (momentum, traffic, content, and engagement signals), we train five models under client-holdout
-      validation and GroupKFold cross-validation. The best model (LightGBM) achieves ROC AUC 0.995
-      and Average Precision 0.997 on held-out clients, substantially outperforming the stale-first
-      heuristic baseline (ROC AUC 0.537). The action engine assigns each page a priority score (0–100),
-      a suggested action (refresh, review CTR, expand, protect, monitor), and human-readable reason
-      codes — producing a decision-support queue rather than a black-box prediction.
-    </p>
-
+<!-- TOC -->
+<section style="padding:3rem 1.5rem 1rem;">
+  <div class="section-inner">
     <div class="toc">
-      <strong>Contents</strong>
+      <div class="toc-title">Contents</div>
       <ol>
         <li><a href="#intro">Introduction & Problem Statement</a></li>
         <li><a href="#data">Data</a></li>
         <li><a href="#method">Methodology</a></li>
         <li><a href="#results">Results</a></li>
         <li><a href="#limitations">Limitations & Honest Framing</a></li>
-        <li><a href="#actions">Ranked Recommendations (Action Playbook)</a></li>
+        <li><a href="#actions">Ranked Recommendations</a></li>
         <li><a href="#repro">Reproducibility</a></li>
         <li><a href="#ack">Acknowledgments</a></li>
       </ol>
     </div>
+  </div>
+</section>
 
-    <!-- 1. Introduction -->
-    <h2 id="intro">1. Introduction & Problem Statement</h2>
+<!-- 1. INTRO -->
+<section id="intro">
+  <div class="section-inner">
+    <span class="section-num">01 — Introduction</span>
+    <h2>The problem is not <em>which pages declined</em>.<br>It's <em>which to act on first</em>.</h2>
     <p>
-      SEO content management platforms like FlyRank monitor thousands of pages across dozens of clients.
-      When a page's search impressions decline, the recommended action is a content refresh — but identifying
-      <em>which</em> pages need attention, and <em>why</em>, is often reactive and manual.
+      SEO content platforms monitor thousands of pages across dozens of clients. When a page's
+      search impressions decline, the fix is a content refresh — but identifying which pages
+      need attention, and why, is reactive and manual. Content managers drown in dashboards;
+      the question they need answered is simple: <em>what should I work on today?</em>
     </p>
+    <h3>Research Question</h3>
     <p>
-      <strong>Research question:</strong> Can we predict, from observable page-level metrics, which content
-      pages are declining in search visibility — and rank them by priority for a refresh action?
+      Can we predict, from observable page-level metrics, which content pages are declining
+      in search visibility — and rank them by priority for a refresh action?
     </p>
+    <h3>Decision Supported</h3>
     <p>
-      <strong>Decision it supports:</strong> A content manager receives a daily queue of pages sorted by
-      priority score, each annotated with a suggested action and reason codes, so the team can focus on
-      high-impact refreshes before traffic drops further.
+      A content manager receives a priority-ranked queue. Each page has a score (0–100),
+      a suggested action (refresh, review CTR, expand, protect, monitor), and human-readable
+      reason codes. This is <em>decision-support</em>, not a causal claim. We observe patterns
+      in historical data. We do not predict Google's algorithm.
     </p>
-    <p>
-      This work treats the problem as a <em>decision-support</em> system, not a causal claim. We observe
-      patterns in historical data and rank pages by their likelihood of decline. We do not predict Google's
-      algorithm or claim that refreshing a page will reverse its trajectory.
-    </p>
+  </div>
+</section>
 
-    <!-- 2. Data -->
-    <h2 id="data">2. Data</h2>
+<!-- 2. DATA -->
+<section id="data" style="background:var(--bg-elev);">
+  <div class="section-inner">
+    <span class="section-num">02 — Data</span>
+    <h2>30,000 pages.<br>32 clients. 44 columns → <em>52 features</em>.</h2>
     <p>
-      <strong>Source:</strong> <code>content_refresh_anonymized.csv</code> — a 30,000-row × 44-column
-      teaching slice from the FlyRank internship warehouse, covering 32 pseudonymized clients.
+      <strong>Source:</strong> <code>content_refresh_anonymized.csv</code> — a teaching slice from the
+      FlyRank internship warehouse. Each row is one content item (page) with 90-day aggregated GSC
+      and GA4 metrics, 30-day comparison windows, keyword context, and content properties.
+      The full warehouse on Hugging Face has ~79M rows; this capstone uses the slice with a
+      documented path to scale via DuckDB + <code>hf://</code>.
     </p>
     <div class="stat-grid">
-      <div class="stat-card"><div class="num">30,000</div><div class="label">Pages (rows)</div></div>
-      <div class="stat-card"><div class="num">32</div><div class="label">Clients</div></div>
-      <div class="stat-card"><div class="num">44 → 52</div><div class="label">Columns (raw → features)</div></div>
-      <div class="stat-card"><div class="num">54.2%</div><div class="label">Declining pages</div></div>
+      <div class="stat-card"><div class="num teal">30K</div><div class="lbl">Pages</div></div>
+      <div class="stat-card"><div class="num amber">32</div><div class="lbl">Clients</div></div>
+      <div class="stat-card"><div class="num violet">52</div><div class="lbl">Features</div></div>
+      <div class="stat-card"><div class="num red">54.2%</div><div class="lbl">Declining</div></div>
     </div>
-    <h3>Tables & columns</h3>
-    <p>
-      Each row is one content item (page) with 90-day aggregated GSC and GA4 metrics, 30-day comparison
-      windows, keyword context, content properties, and derived rates. The full warehouse on Hugging Face
-      contains ~79M daily performance rows across four tables; this capstone uses the bundled teaching slice
-      with a documented path to scale via DuckDB + <code>hf://</code>.
-    </p>
-    <h3>Trend direction (label source)</h3>
-    <p>
-      <code>trend_direction</code> is derived from comparing <code>impressions_last_30d</code> vs
-      <code>impressions_prev_30d</code>: <code>down</code> if decline exceeds 20%, <code>up</code> if growth
-      exceeds 20%, otherwise <code>stable</code>, <code>flat</code>, or <code>new</code>.
-    </p>
-    <div class="chart">
-      <img src="outputs/charts/eda_label_distribution.png" alt="Label distribution">
-      <figcaption>Figure 1: Label distribution — 54.2% of pages are declining (trend_direction = down).</figcaption>
-    </div>
-    <h3>Missingness</h3>
-    <p>
-      Missingness is <strong>systematic, not random</strong>: keyword-context columns
-      (<code>search_volume</code>, <code>competition</code>, <code>cpc</code>) are 100% missing for
-      <code>feedly article</code> rows, and <code>provider_used</code> is 71% missing overall.
-      A blind <code>fillna(0)</code> would silently encode content type into features.
-    </p>
-    <div class="chart">
-      <img src="outputs/charts/eda_missingness.png" alt="Missingness analysis">
-      <figcaption>Figure 2: Missing data by column — systematic patterns along content_type lines.</figcaption>
-    </div>
-    <h3>Per-client variation</h3>
-    <p>
-      Declining rates range from 0% to 94% across clients, with page counts from 3 to 7,008.
-      This motivates <strong>client-aware validation</strong> — a random row split would leak
-      client-specific patterns into the test set.
-    </p>
-    <div class="chart">
-      <img src="outputs/charts/eda_per_client.png" alt="Per-client variation">
-      <figcaption>Figure 3: Pages per client (left) and declining rate per client (right). Wide variation justifies client-holdout validation.</figcaption>
-    </div>
-    <h3>Exclusions</h3>
-    <p>
-      The following columns are <strong>excluded from features</strong> as leakage sources:
-      <code>trend_direction</code>, <code>trend_pct</code> (label-derived), <code>content_id</code>,
-      <code>client_id</code> (identifiers). The existing baseline also excludes
-      <code>provider_used</code> and <code>model_used</code>.
-    </p>
 
-    <!-- 3. Methodology -->
-    <h2 id="method">3. Methodology</h2>
-    <h3>Label definition</h3>
+    <h3>Label Source: trend_direction</h3>
     <p>
-      <strong>Binary:</strong> <code>is_declining = (trend_direction == "down")</code> — 54.2% positive rate.
-      We also experimented with 3-class (<code>growing / stable / declining</code>) and regression
-      (<code>trend_pct</code>) formulations; the binary label provides the clearest decision boundary
+      Derived from comparing <code>impressions_last_30d</code> vs <code>impressions_prev_30d</code>:
+      <code>down</code> if decline exceeds 20%, <code>up</code> if growth exceeds 20%, else
+      <code>stable</code>, <code>flat</code>, or <code>new</code>.
+    </p>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/eda_label_distribution.png" alt="Label distribution"></div>
+      <figcaption>Fig 1 — 54.2% of pages are declining. The class imbalance is moderate.</figcaption>
+    </div>
+
+    <h3>Missingness is systematic</h3>
+    <p>
+      Keyword-context columns (<code>search_volume</code>, <code>competition</code>, <code>cpc</code>)
+      are 100% missing for <code>feedly article</code> rows. <code>provider_used</code> is 71% missing.
+      A blind <code>fillna(0)</code> silently encodes content type into features.
+    </p>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/eda_missingness.png" alt="Missingness"></div>
+      <figcaption>Fig 2 — Missing data by column. Patterns follow content_type lines, not random.</figcaption>
+    </div>
+
+    <h3>Per-client variation justifies client-aware validation</h3>
+    <p>
+      Declining rates range from 0% to 94% across clients. Page counts range from 3 to 7,008.
+      A random row split would leak client-specific patterns into the test set.
+    </p>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/eda_per_client.png" alt="Per-client variation"></div>
+      <figcaption>Fig 3 — Pages per client (left) and declining rate (right). Wide variation → client-holdout validation.</figcaption>
+    </div>
+
+    <h3>Exclusions</h3>
+    <ul>
+      <li><code>trend_direction</code>, <code>trend_pct</code> — label-derived (leakage)</li>
+      <li><code>content_id</code>, <code>client_id</code> — identifiers (grouping only)</li>
+      <li><code>provider_used</code>, <code>model_used</code> — not model features</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. METHODOLOGY -->
+<section id="method">
+  <div class="section-inner">
+    <span class="section-num">03 — Methodology</span>
+    <h2>52 features. 5 models.<br><em>Client-holdout</em> validation.</h2>
+
+    <h3>Label</h3>
+    <p>
+      Binary: <code>is_declining = (trend_direction == "down")</code> — 54.2% positive rate.
+      Also tested 3-class and regression formulations; binary gives the clearest decision boundary
       for the action engine.
     </p>
-    <h3>Features (52 total)</h3>
+
+    <h3>Feature Engineering</h3>
     <ul>
-      <li><strong>Traffic (log-transformed):</strong> log-impressions, log-clicks, log-sessions, log-pageviews, log-AI sessions, log-scroll events, log-users</li>
-      <li><strong>Momentum:</strong> impression/click/session momentum (last-30 / prev-30 ratio, clipped 0–10)</li>
-      <li><strong>Ratios:</strong> CTR×impressions, engagement×sessions, scroll×CTR, position×impressions, impressions/day, sessions/day, clicks/impression, engaged session rate, AI session share, scroll/pageview</li>
+      <li><strong>Momentum:</strong> impression / click / session momentum (last30 / prev30 ratio, clipped 0–10)</li>
+      <li><strong>Ratios:</strong> CTR×impressions, engagement×sessions, scroll×CTR, position×impressions, impressions/day, clicks/impression, engaged session rate, AI session share</li>
+      <li><strong>Traffic (log):</strong> log-impressions, log-clicks, log-sessions, log-pageviews, log-AI sessions, log-scroll events, log-users</li>
       <li><strong>Rates:</strong> CTR, avg position, engagement rate, scroll rate, AI traffic %</li>
       <li><strong>Content:</strong> word count, char count, content age, days since update, search volume, competition, CPC</li>
       <li><strong>Flags:</strong> is_stale (>90d), is_very_stale (>180d), has_been_updated, has_position, is_top10, is_top3, has_clicks, has_ai_sessions, measurable_opportunity</li>
       <li><strong>Categorical (9):</strong> competition_level, content_type, main_intent, age_tier, freshness_tier, word_count_tier, char_count_tier, impression_tier, position_tier</li>
     </ul>
     <div class="warning">
-      <strong>Leakage check:</strong> No feature column contains <code>trend</code> or <code>decline</code>
-      in its name. The label-derived columns (<code>trend_direction</code>, <code>trend_pct</code>) are
-      excluded from the feature matrix. Verified programmatically.
+      <strong>Leakage check passed.</strong> No feature contains <code>trend</code> or <code>decline</code>.
+      Label-derived columns excluded programmatically. Verified in <code>capstone_feature_config.json</code>.
     </div>
+
     <h3>Baselines</h3>
-    <ol>
+    <ul>
       <li><strong>Majority class</strong> — always predict "not declining" (ROC AUC = 0.500)</li>
       <li><strong>Random</strong> — uniform random probabilities</li>
-      <li><strong>Stale-first rule</strong> — rank by content age + staleness flags (the existing heuristic)</li>
-    </ol>
-    <h3>Models</h3>
-    <ol>
-      <li><strong>Logistic Regression</strong> — linear baseline, balanced class weights, standardized features</li>
-      <li><strong>Random Forest</strong> — 300 trees, max depth 12, balanced subsample</li>
-      <li><strong>XGBoost</strong> — 300 trees, max depth 6, learning rate 0.1, subsample 0.8</li>
-      <li><strong>LightGBM</strong> — 300 trees, max depth 8, learning rate 0.1, balanced class weights</li>
-      <li><strong>Extra Trees</strong> — 300 trees, max depth 12, balanced class weights</li>
-    </ol>
-    <h3>Validation design</h3>
-    <ul>
-      <li><strong>Primary split:</strong> Client-holdout — 80% of clients for train (26 clients, 25,277 pages), 20% for test (6 clients, 4,723 pages). Ensures the model generalizes across <em>unseen clients</em>, not just unseen rows.</li>
-      <li><strong>Cross-validation:</strong> 5-fold GroupKFold on training set (grouped by client) to estimate out-of-client performance and stability.</li>
-      <li><strong>Random seed:</strong> 42 (all results reproducible)</li>
+      <li><strong>Stale-first rule</strong> — rank by content age + staleness flags (existing heuristic)</li>
     </ul>
-    <h3>Key feature: impression momentum</h3>
-    <p>
-      The single most important feature is <code>impression_momentum</code> — the ratio of
-      last-30-day to prev-30-day impressions. Pages with momentum &lt; 0.8 (20%+ decline) are the
-      model's primary signal. This is not leakage: we are using <em>past</em> trajectory to predict
-      the <em>current</em> label, which itself is defined by the same comparison window. The momentum
-      feature is computed from the same columns the label derives from, but the task is to
-      <em>rank and prioritize</em>, not to predict a future the data hasn't seen.
-    </p>
 
-    <!-- 4. Results -->
-    <h2 id="results">4. Results</h2>
+    <h3>Models</h3>
+    <ul>
+      <li><strong>Logistic Regression</strong> — linear baseline, balanced, standardized</li>
+      <li><strong>Random Forest</strong> — 300 trees, depth 12, balanced subsample</li>
+      <li><strong>XGBoost</strong> — 300 trees, depth 6, lr 0.1, subsample 0.8</li>
+      <li><strong>LightGBM</strong> — 300 trees, depth 8, lr 0.1, balanced</li>
+      <li><strong>Extra Trees</strong> — 300 trees, depth 12, balanced</li>
+    </ul>
+
+    <h3>Validation</h3>
+    <ul>
+      <li><strong>Primary split:</strong> Client-holdout — 26 clients train (25,277 pages), 6 clients test (4,723 pages)</li>
+      <li><strong>Cross-validation:</strong> 5-fold GroupKFold (grouped by client) for out-of-client stability</li>
+      <li><strong>Seed:</strong> 42 — all results reproducible</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 4. RESULTS -->
+<section id="results" style="background:var(--bg-elev);">
+  <div class="section-inner">
+    <span class="section-num">04 — Results</span>
+    <h2>LightGBM: <em>0.995</em> ROC AUC.<br>Baseline: 0.537.</h2>
+
     <table>
       <thead>
-        <tr>
-          <th>Model</th>
-          <th>ROC AUC</th>
-          <th>Avg Precision</th>
-          <th>F1</th>
-          <th>Precision@50</th>
-          <th>Brier</th>
-          <th>CV AUC (5-fold)</th>
-        </tr>
+        <tr><th>Model</th><th>ROC AUC</th><th>Avg Precision</th><th>F1</th><th>P@50</th><th>Brier</th><th>CV AUC (5-fold)</th></tr>
       </thead>
       <tbody>
         <tr><td>Logistic Regression</td><td>0.920</td><td>0.948</td><td>0.881</td><td>1.000</td><td>0.115</td><td>0.929 ± 0.035</td></tr>
         <tr><td>Random Forest</td><td>0.985</td><td>0.991</td><td>0.942</td><td>1.000</td><td>0.062</td><td>0.990 ± 0.010</td></tr>
         <tr><td>XGBoost</td><td>0.994</td><td>0.997</td><td>0.965</td><td>1.000</td><td>0.031</td><td>0.993 ± 0.008</td></tr>
-        <tr style="font-weight:700;background:rgba(42,93,99,0.06)"><td>LightGBM ★</td><td>0.995</td><td>0.997</td><td>0.975</td><td>1.000</td><td>0.025</td><td>0.993 ± 0.008</td></tr>
+        <tr class="best"><td>★ LightGBM</td><td>0.995</td><td>0.997</td><td>0.975</td><td>1.000</td><td>0.025</td><td>0.993 ± 0.008</td></tr>
         <tr><td>Extra Trees</td><td>0.785</td><td>0.812</td><td>0.775</td><td>0.860</td><td>0.193</td><td>0.822 ± 0.025</td></tr>
-        <tr style="border-top:2px solid var(--hairline-strong)"><td>Stale-first rule (baseline)</td><td>0.537</td><td>0.683</td><td>—</td><td>0.240</td><td>—</td><td>—</td></tr>
-        <tr><td>Random (baseline)</td><td>0.500</td><td>0.618</td><td>—</td><td>0.600</td><td>—</td><td>—</td></tr>
-        <tr><td>Majority class (baseline)</td><td>0.500</td><td>0.617</td><td>0.000</td><td>0.617</td><td>—</td><td>—</td></tr>
+        <tr class="baseline"><td>Stale-first rule</td><td>0.537</td><td>0.683</td><td>—</td><td>0.240</td><td>—</td><td>—</td></tr>
+        <tr class="baseline"><td>Random</td><td>0.500</td><td>0.618</td><td>—</td><td>0.600</td><td>—</td><td>—</td></tr>
+        <tr class="baseline"><td>Majority class</td><td>0.500</td><td>0.617</td><td>0.000</td><td>0.617</td><td>—</td><td>—</td></tr>
       </tbody>
     </table>
+
     <p>
-      <strong>Key finding:</strong> LightGBM achieves ROC AUC 0.995 and Average Precision 0.997 on
-      held-out clients, a <strong>+85.2% relative improvement</strong> over the stale-first baseline
-      (ROC AUC 0.537). All five models outperform all three baselines. Precision@50 is 1.000 for
-      the top four models — the top-50 ranked pages in the test set are all genuinely declining.
-    </p>
-    <div class="chart">
-      <img src="outputs/charts/model_comparison.png" alt="Model comparison">
-      <figcaption>Figure 4: Model comparison vs stale-first baseline across four metrics.</figcaption>
-    </div>
-    <div class="chart">
-      <img src="outputs/charts/roc_curves.png" alt="ROC curves">
-      <figcaption>Figure 5: ROC curves — all five models on the client-holdout test set.</figcaption>
-    </div>
-    <div class="chart">
-      <img src="outputs/charts/precision_at_k.png" alt="Precision@K">
-      <figcaption>Figure 6: Precision@K curves — top-N pages ranked by model probability vs base rate.</figcaption>
-    </div>
-    <h3>Calibration & confusion matrix</h3>
-    <div class="chart">
-      <img src="outputs/charts/confusion_and_calibration.png" alt="Confusion matrix and calibration">
-      <figcaption>Figure 7: Confusion matrix (left) — 4,576/4,723 correct (96.9%). Calibration curve (right) — predicted probabilities track observed frequencies closely.</figcaption>
-    </div>
-    <h3>Feature importance</h3>
-    <div class="chart">
-      <img src="outputs/charts/feature_importance_best.png" alt="Feature importance">
-      <figcaption>Figure 8: Top 20 feature importances (LightGBM). Impression momentum dominates, followed by traffic volume and position.</figcaption>
-    </div>
-    <h3>Per-client performance</h3>
-    <div class="chart">
-      <img src="outputs/charts/per_client_performance.png" alt="Per-client performance">
-      <figcaption>Figure 9: Precision and recall per client in the test set. Performance is consistent across clients, indicating cross-client generalization.</figcaption>
-    </div>
-    <h3>Error analysis</h3>
-    <div class="chart">
-      <img src="outputs/charts/error_analysis.png" alt="Error analysis">
-      <figcaption>Figure 10: Distribution of correct predictions, false positives, and false negatives by traffic volume, position, and content age.</figcaption>
-    </div>
-    <p>
-      The model makes 97 false negatives and 50 false positives out of 4,723 test pages (error rate 3.1%).
-      False negatives are concentrated among low-traffic pages (&lt;100 impressions), where the signal
-      is weakest. False positives cluster around pages with high traffic but stable trends — the model
-      is slightly over-sensitive to volume changes in high-traffic pages.
+      <strong>+85.2% relative improvement</strong> over the stale-first baseline. Precision@50 = 1.000
+      for the top four models — the top-50 ranked pages are all genuinely declining. The model doesn't
+      just classify; it <em>ranks</em>.
     </p>
 
-    <!-- 5. Limitations -->
-    <h2 id="limitations">5. Limitations & Honest Framing</h2>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/model_comparison.png" alt="Model comparison"></div>
+      <figcaption>Fig 4 — Model comparison vs stale-first baseline across four metrics.</figcaption>
+    </div>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/roc_curves.png" alt="ROC curves"></div>
+      <figcaption>Fig 5 — ROC curves on the client-holdout test set.</figcaption>
+    </div>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/precision_at_k.png" alt="Precision@K"></div>
+      <figcaption>Fig 6 — Precision@K curves. Top-N pages ranked by model probability vs base rate.</figcaption>
+    </div>
+
+    <h3>Calibration & Confusion Matrix</h3>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/confusion_and_calibration.png" alt="Confusion and calibration"></div>
+      <figcaption>Fig 7 — 4,576/4,723 correct (96.9%). Calibration: predicted probabilities track observed frequencies.</figcaption>
+    </div>
+
+    <h3>Feature Importance</h3>
+    <p>
+      <code>impression_momentum</code> (last-30 / prev-30 ratio) dominates at 63% — expected, since the
+      label is defined from the same comparison. The model's value is <em>prioritization and reason codes</em>,
+      not early detection.
+    </p>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/feature_importance_best.png" alt="Feature importance"></div>
+      <figcaption>Fig 8 — Top 20 features (LightGBM). Momentum dominates, then traffic volume and position.</figcaption>
+    </div>
+
+    <h3>Per-Client Performance</h3>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/per_client_performance.png" alt="Per-client performance"></div>
+      <figcaption>Fig 9 — Precision and recall per client. Consistent → cross-client generalization.</figcaption>
+    </div>
+
+    <h3>Error Analysis</h3>
+    <p>
+      97 false negatives, 50 false positives (error rate 3.1%). False negatives concentrate among
+      low-traffic pages (&lt;100 impressions) where signal is weakest. False positives cluster around
+      high-traffic stable pages — the model is slightly over-sensitive to volume changes.
+    </p>
+    <div class="chart">
+      <div class="chart-inner"><img src="charts/error_analysis.png" alt="Error analysis"></div>
+      <figcaption>Fig 10 — Error distribution by traffic volume, position, and content age.</figcaption>
+    </div>
+  </div>
+</section>
+
+<!-- 5. LIMITATIONS -->
+<section id="limitations">
+  <div class="section-inner">
+    <span class="section-num">05 — Limitations</span>
+    <h2>What this work <em>cannot</em> claim.</h2>
     <ul>
-      <li><strong>Teaching slice, not full warehouse.</strong> This capstone uses the bundled 30K-row CSV,
-      not the full 79M-row Hugging Face release. The pipeline is designed to scale (DuckDB + hf://),
-      but results reflect the teaching slice only. Feature engineering from the daily fact table would
-      add time-series features (volatility, trend slopes, day-of-week patterns) unavailable in the slice.</li>
-      <li><strong>Label is retrospective, not predictive.</strong> The label
-      (<code>trend_direction == "down"</code>) measures whether a page <em>already</em> declined. The
-      model learns to identify declining pages, not to predict future declines. A true forward-looking
-      model would need a label defined on a future window — possible with the daily fact table but not
-      with the teaching slice's aggregate columns.</li>
-      <li><strong>Momentum is the dominant signal.</strong> <code>impression_momentum</code> (last-30 /
-      prev-30 impression ratio) carries 63% of feature importance. This is expected — the label is
-      defined from the same comparison — but it means the model is essentially detecting "pages that
-      already dropped" rather than discovering subtle leading indicators. The action engine's value
-      is in <em>prioritization and reason codes</em>, not in early detection.</li>
-      <li><strong>No causal claims.</strong> We do not claim that refreshing a page will reverse its
-      decline. The model identifies <em>which</em> pages are declining and <em>why</em> (reason codes);
-      whether a refresh helps is a separate intervention question.</li>
-      <li><strong>32 clients, not 104.</strong> The teaching slice covers 32 of 104 clients in the full
-      warehouse. Cross-client generalization is tested on 6 held-out clients — sufficient for a capstone
-      but not for production.</li>
-      <li><strong>Rate columns are ×100 percentages.</strong> CTR = 0.76 means 0.76%, not 76%. All
-      analysis respects this convention.</li>
-      <li><strong>Position = 0 means no data, not position zero.</strong> 1,205 rows have
-      <code>avg_position = 0</code> (no GSC position data). These are flagged with
-      <code>has_position</code> and handled correctly.</li>
+      <li><strong>Teaching slice, not full warehouse.</strong> 30K rows, not 79M. Pipeline is designed to scale via DuckDB + <code>hf://</code>, but results reflect the slice only.</li>
+      <li><strong>Label is retrospective.</strong> The label measures whether a page <em>already</em> declined. The model identifies declining pages, not predicts future declines.</li>
+      <li><strong>Momentum dominates.</strong> <code>impression_momentum</code> carries 63% of importance. The model detects decline, not leading indicators. The action engine's value is prioritization, not early warning.</li>
+      <li><strong>No causal claims.</strong> Refreshing a page may or may not reverse decline. The model says <em>which</em> pages are declining and <em>why</em> — not that a refresh will fix it.</li>
+      <li><strong>32 clients, not 104.</strong> Cross-client generalization tested on 6 held-out clients. Sufficient for capstone; not production.</li>
+      <li><strong>Rate columns are ×100 percentages.</strong> CTR = 0.76 means 0.76%, not 76%.</li>
+      <li><strong>Position = 0 means no data.</strong> 1,205 rows. Flagged with <code>has_position</code>.</li>
     </ul>
+  </div>
+</section>
 
-    <!-- 6. Ranked Recommendations -->
-    <h2 id="actions">6. Ranked Recommendations (Action Playbook)</h2>
+<!-- 6. ACTIONS -->
+<section id="actions" style="background:var(--bg-elev);">
+  <div class="section-inner">
+    <span class="section-num">06 — Action Playbook</span>
+    <h2>From prediction to <em>prioritized queue</em>.</h2>
     <p>
-      The action engine processes each page through three layers: (1) model probability → (2) rule-based
-      reason codes → (3) action mapping + priority score. The output is a priority-ranked queue.
+      The action engine processes each page through three layers: model probability → rule-based
+      reason codes → action mapping + priority score. The output is a daily queue a content manager
+      can act on immediately.
     </p>
-    <h3>Action distribution (test set: 4,723 pages)</h3>
+
+    <h3>Action Distribution (4,723 pages)</h3>
     <table>
       <thead><tr><th>Action</th><th>Count</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><span class="tag tag-action">refresh</span></td><td>1,419</td><td>Model flags decline risk; refresh content to recover visibility</td></tr>
-        <tr><td><span class="tag tag-action">refresh_and_review_ctr</span></td><td>1,194</td><td>Declining + low CTR at visible position; refresh and check title/meta</td></tr>
-        <tr><td><span class="tag tag-action">monitor</span></td><td>1,136</td><td>No strong signal; keep in queue for periodic review</td></tr>
-        <tr><td><span class="tag tag-action">protect</span></td><td>557</td><td>Growing page with traffic; protect from unnecessary changes</td></tr>
-        <tr><td><span class="tag tag-action">refresh_and_review_engagement</span></td><td>378</td><td>Declining + low engagement; refresh and review UX/content quality</td></tr>
-        <tr><td><span class="tag tag-action">expand_and_refresh</span></td><td>39</td><td>Thin content (&lt;1000 words) with traffic; expand and refresh</td></tr>
+        <tr><td><span class="tag tag-refresh">refresh</span></td><td>1,419</td><td>Model flags decline risk; refresh to recover visibility</td></tr>
+        <tr><td><span class="tag tag-ctr">refresh_and_review_ctr</span></td><td>1,194</td><td>Declining + low CTR at visible position; check title/meta</td></tr>
+        <tr><td><span class="tag tag-monitor">monitor</span></td><td>1,136</td><td>No strong signal; periodic review</td></tr>
+        <tr><td><span class="tag tag-protect">protect</span></td><td>557</td><td>Growing page; protect from unnecessary changes</td></tr>
+        <tr><td><span class="tag tag-engagement">refresh_and_review_engagement</span></td><td>378</td><td>Declining + low engagement; review UX/content quality</td></tr>
+        <tr><td><span class="tag tag-expand">expand_and_refresh</span></td><td>39</td><td>Thin content (&lt;1000 words) with traffic; expand</td></tr>
       </tbody>
     </table>
     <div class="chart">
-      <img src="outputs/charts/action_engine_distribution.png" alt="Action engine distribution">
-      <figcaption>Figure 11: Action distribution, confidence levels, and top reason codes across the test set.</figcaption>
+      <div class="chart-inner"><img src="charts/action_engine_distribution.png" alt="Action distribution"></div>
+      <figcaption>Fig 11 — Action distribution, confidence levels, and top reason codes.</figcaption>
     </div>
-    <h3>Reason codes (top 10)</h3>
+
+    <h3>Top Reason Codes</h3>
     <table>
-      <thead><tr><th>Reason Code</th><th>Count</th><th>Trigger</th></tr></thead>
+      <thead><tr><th>Code</th><th>Count</th><th>Trigger</th></tr></thead>
       <tbody>
         <tr><td><code>model_decline_risk</code></td><td>2,832</td><td>Model probability ≥ 0.65</td></tr>
-        <tr><td><code>low_ctr_visible_position</code></td><td>1,791</td><td>CTR &lt; 0.5% at position ≤ 20 with ≥100 impressions</td></tr>
-        <tr><td><code>high_visibility_declining</code></td><td>1,733</td><td>≥500 impressions + model probability ≥ 0.5</td></tr>
-        <tr><td><code>stale_content</code></td><td>1,193</td><td>Days since last update > 90</td></tr>
-        <tr><td><code>low_engagement_with_traffic</code></td><td>567</td><td>Engagement rate &lt; 30% with ≥30 sessions</td></tr>
-        <tr><td><code>growing_page_protect</code></td><td>560</td><td>Model probability &lt; 0.3 + ≥500 impressions</td></tr>
+        <tr><td><code>low_ctr_visible_position</code></td><td>1,791</td><td>CTR &lt; 0.5% at position ≤ 20, ≥100 impressions</td></tr>
+        <tr><td><code>high_visibility_declining</code></td><td>1,733</td><td>≥500 impressions + probability ≥ 0.5</td></tr>
+        <tr><td><code>stale_content</code></td><td>1,193</td><td>Days since update > 90</td></tr>
+        <tr><td><code>low_engagement_with_traffic</code></td><td>567</td><td>Engagement &lt; 30% with ≥30 sessions</td></tr>
+        <tr><td><code>growing_page_protect</code></td><td>560</td><td>Probability &lt; 0.3 + ≥500 impressions</td></tr>
         <tr><td><code>old_content_losing_position</code></td><td>79</td><td>Days since update > 180</td></tr>
         <tr><td><code>thin_content_visible</code></td><td>39</td><td>Word count &lt; 1000 + ≥100 impressions</td></tr>
       </tbody>
     </table>
-    <h3>Confidence distribution</h3>
+
+    <h3>Confidence</h3>
     <div class="stat-grid">
-      <div class="stat-card"><div class="num" style="color:#E74C3C">1,400</div><div class="label">High confidence</div></div>
-      <div class="stat-card"><div class="num" style="color:#F39C12">1,460</div><div class="label">Medium confidence</div></div>
-      <div class="stat-card"><div class="num" style="color:#95A5A6">1,863</div><div class="label">Low confidence</div></div>
+      <div class="stat-card"><div class="num red">1,400</div><div class="lbl">High confidence</div></div>
+      <div class="stat-card"><div class="num amber">1,460</div><div class="lbl">Medium</div></div>
+      <div class="stat-card"><div class="num" style="color:var(--text-dim)">1,863</div><div class="lbl">Low</div></div>
     </div>
     <p>
-      The full queue is exported to <code>outputs/capstone_refresh_queue.csv</code> (4,723 rows),
-      with top-50 and top-100 subsets in <code>capstone_refresh_queue_top50.csv</code> and
-      <code>capstone_refresh_queue_top100.csv</code>.
+      Full queue: <code>outputs/capstone_refresh_queue.csv</code> (4,723 rows).
+      Top 50/100 subsets exported for daily review.
     </p>
+  </div>
+</section>
 
-    <!-- 7. Reproducibility -->
-    <h2 id="repro">7. Reproducibility</h2>
+<!-- 7. REPRODUCIBILITY -->
+<section id="repro">
+  <div class="section-inner">
+    <span class="section-num">07 — Reproducibility</span>
+    <h2>Run it yourself.</h2>
     <h3>Notebooks</h3>
     <ul>
-      <li><code>work/notebooks/capstone_eda.ipynb</code> — Exploratory data analysis (distributions, missingness, per-client variation, correlation, momentum)</li>
-      <li><code>work/notebooks/capstone_features.ipynb</code> — Feature engineering, label definitions, leakage check, feature vector export</li>
-      <li><code>work/notebooks/capstone_model.ipynb</code> — Model training (5 models), GroupKFold CV, evaluation, charts</li>
-      <li><code>work/notebooks/capstone_action_engine.ipynb</code> — Ranked action engine, reason codes, priority scores, queue export</li>
+      <li><code>capstone_eda.ipynb</code> — distributions, missingness, per-client, correlation, momentum</li>
+      <li><code>capstone_features.ipynb</code> — 52 features, 3 label formulations, leakage check</li>
+      <li><code>capstone_model.ipynb</code> — 5 models, GroupKFold CV, evaluation, charts</li>
+      <li><code>capstone_action_engine.ipynb</code> — priority queue, reason codes, confidence</li>
     </ul>
     <h3>Scripts</h3>
     <ul>
-      <li><code>scripts/capstone_run_model.py</code> — Runnable model pipeline (reproduces all results)</li>
-      <li><code>scripts/capstone_run_action_engine.py</code> — Runnable action engine (reproduces queue)</li>
-    </ul>
-    <h3>Outputs</h3>
-    <ul>
-      <li><code>outputs/capstone_model_results.json</code> — All model metrics, baselines, feature importance</li>
-      <li><code>outputs/capstone_action_summary.json</code> — Action distribution, confidence, reason codes</li>
-      <li><code>outputs/capstone_refresh_queue.csv</code> — Full ranked queue</li>
-      <li><code>outputs/charts/</code> — All figures (PNG, 150 DPI)</li>
-      <li><code>data/processed/capstone_feature_vector.csv</code> — Engineered feature matrix</li>
-      <li><code>data/processed/capstone_feature_config.json</code> — Feature names and leakage guard</li>
+      <li><code>scripts/capstone_run_model.py</code> — full model pipeline (reproduces all results)</li>
+      <li><code>scripts/capstone_run_action_engine.py</code> — action engine (reproduces queue)</li>
     </ul>
     <h3>Environment</h3>
     <p>
-      Python 3.14 · scikit-learn 1.9 · XGBoost 3.4 · LightGBM 4.7 · random seed = 42.
-      All results are reproducible by running <code>python scripts/capstone_run_model.py && python scripts/capstone_run_action_engine.py</code>.
+      Python 3.14 · scikit-learn 1.9 · XGBoost 3.4 · LightGBM 4.7 · seed = 42.
+      <br><code>python scripts/capstone_run_model.py && python scripts/capstone_run_action_engine.py</code>
     </p>
-    <h3>Path to full warehouse</h3>
+    <h3>Path to Full Warehouse</h3>
     <p>
-      The pipeline is designed to scale to the full 79M-row Hugging Face release
-      (<code>FlyRank/internship-warehouse</code>) via DuckDB + <code>hf://</code>. The feature
-      engineering notebook documents the SQL aggregation pattern; replacing the CSV load with
-      a DuckDB query on <code>fact_content_daily_performance</code> would add time-series features
-      (volatility, trend slopes, day-of-week patterns) and enable a true forward-looking label.
+      The pipeline scales to the 79M-row Hugging Face release via DuckDB + <code>hf://</code>.
+      Replacing the CSV load with a DuckDB query on <code>fact_content_daily_performance</code>
+      adds time-series features (volatility, trend slopes, day-of-week patterns) and enables
+      a true forward-looking label.
     </p>
-
-    <!-- 8. Acknowledgments -->
-    <h2 id="ack">8. Acknowledgments</h2>
-    <p class="ack">
-      Built on the <a href="https://flyrank.ai">FlyRank</a> ML Internship dataset.
-      Data and starter infrastructure provided by FlyRank. All client names, domains, and URLs
-      are pseudonymized — no private data is displayed or stored in this repository.
-    </p>
-
   </div>
+</section>
+
+<!-- 8. ACK -->
+<section id="ack" class="ack">
+  <p>
+    Built on the <a href="https://flyrank.ai">FlyRank</a> ML Internship dataset.<br>
+    All client names, domains, and URLs are pseudonymized.<br>
+    No private data is displayed or stored in this repository.
+  </p>
+</section>
+
+<script>
+// Nav: hide on scroll down, show on scroll up
+let lastScroll = 0;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const cur = window.scrollY;
+  if (cur > lastScroll && cur > 100) nav.classList.add('hidden');
+  else nav.classList.remove('hidden');
+  lastScroll = cur;
+});
+
+// Active nav link based on scroll position
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.dataset.sec === current);
+  });
+});
+</script>
+
 </body>
 </html>
