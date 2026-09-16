@@ -1,0 +1,47 @@
+{
+  "model": "gradient_boosting",
+  "in_sample_roc_auc": 0.7793041828040791,
+  "top_50_declining_rate": 0.88,
+  "top_10_features": [
+    {
+      "feature": "days_with_impressions",
+      "importance": 0.3842030893248072
+    },
+    {
+      "feature": "content_age_days",
+      "importance": 0.1982542452500375
+    },
+    {
+      "feature": "avg_position",
+      "importance": 0.11798242727713207
+    },
+    {
+      "feature": "scroll_rate",
+      "importance": 0.04606958371157671
+    },
+    {
+      "feature": "ctr",
+      "importance": 0.045511429119704676
+    },
+    {
+      "feature": "log_clicks_90d",
+      "importance": 0.04215284855467388
+    },
+    {
+      "feature": "log_impressions_90d",
+      "importance": 0.03984158001779566
+    },
+    {
+      "feature": "days_with_sessions",
+      "importance": 0.021459609676329712
+    },
+    {
+      "feature": "days_since_last_update",
+      "importance": 0.02049972461183201
+    },
+    {
+      "feature": "word_count_tier_1000-2000",
+      "importance": 0.017458001375781705
+    }
+  ]
+}

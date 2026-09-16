@@ -1,0 +1,19 @@
+{
+  "total_pages": 30000,
+  "model": "gradient_boosting",
+  "action_distribution": {
+    "monitor": 10668,
+    "refresh": 8338,
+    "refresh_and_review_ctr": 7066,
+    "refresh_and_review_engagement": 2085,
+    "protect": 1774,
+    "expand_and_refresh": 69
+  },
+  "confidence_distribution": {
+    "low": 15000,
+    "medium": 9760,
+    "high": 5240
+  },
+  "top_50_declining_rate": 0.88,
+  "base_rate": 0.5420666666666667
+}

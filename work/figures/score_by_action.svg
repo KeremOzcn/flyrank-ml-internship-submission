@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="450" viewBox="0 0 900 450">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="450.0" y="32" text-anchor="middle" font-family="Arial" font-size="18" font-weight="600" fill="#16191C">Score by Action</text>
+<text x="188" y="92.5" text-anchor="end" font-family="Arial" font-size="12" fill="#27343b">refresh_and_review_ctr</text>
+<rect x="200" y="60.0" width="640.0" height="50.0" fill="#2A5D63" rx="4"/>
+<text x="848.0" y="92.5" font-family="Arial" font-size="12" fill="#27343b">66</text>
+<text x="188" y="152.5" text-anchor="end" font-family="Arial" font-size="12" fill="#27343b">refresh_and_review_engagement</text>
+<rect x="200" y="120.0" width="631.6" height="50.0" fill="#2A5D63" rx="4"/>
+<text x="839.6" y="152.5" font-family="Arial" font-size="12" fill="#27343b">65</text>
+<text x="188" y="212.5" text-anchor="end" font-family="Arial" font-size="12" fill="#27343b">refresh</text>
+<rect x="200" y="180.0" width="583.7" height="50.0" fill="#2A5D63" rx="4"/>
+<text x="791.7" y="212.5" font-family="Arial" font-size="12" fill="#27343b">60</text>
+<text x="188" y="272.5" text-anchor="end" font-family="Arial" font-size="12" fill="#27343b">expand_and_refresh</text>
+<rect x="200" y="240.0" width="576.4" height="50.0" fill="#2A5D63" rx="4"/>
+<text x="784.4" y="272.5" font-family="Arial" font-size="12" fill="#27343b">59</text>
+<text x="188" y="332.5" text-anchor="end" font-family="Arial" font-size="12" fill="#27343b">protect</text>
+<rect x="200" y="300.0" width="485.2" height="50.0" fill="#2A5D63" rx="4"/>
+<text x="693.2" y="332.5" font-family="Arial" font-size="12" fill="#27343b">50</text>
+<text x="188" y="392.5" text-anchor="end" font-family="Arial" font-size="12" fill="#27343b">monitor</text>
+<rect x="200" y="360.0" width="340.7" height="50.0" fill="#2A5D63" rx="4"/>
+<text x="548.7" y="392.5" font-family="Arial" font-size="12" fill="#27343b">35</text>
+</svg>
